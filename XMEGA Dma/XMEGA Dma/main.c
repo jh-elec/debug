@@ -55,16 +55,16 @@ uint8_t dmaConvertString ( void )
 uint8_t	dmaUsartInit( void )
 {
 	dmaEnableController();
-	dmaSetChannel		( DMA_SET_TEST_CHANNEL );
-	dmaSetBlockSize		( DMA_SET_TEST_CHANNEL , strlen( dmaTxBuff) );
-	dmaSetSrcChDir		( DMA_SET_TEST_CHANNEL , dmaTxBuff , SrcDirectionInc , SrcReloadBlock );
-	dmaSetDestChDir		( DMA_SET_TEST_CHANNEL , (uint32_t*)&USARTE0.DATA , DestDirectionFixed , DestReloadBlock );
-	dmaSetRepeatCount	( DMA_SET_TEST_CHANNEL , 0 );	
-	dmaSetBurstLength	( DMA_SET_TEST_CHANNEL , BurstLength1Byte );
-	dmaSetSingleShot	( DMA_SET_TEST_CHANNEL , false );
-	dmaSetTriggerSource	( DMA_SET_TEST_CHANNEL , DMA_CH_TRIGSRC_USARTE0_DRE_gc );
-	dmaEnableChannel	( DMA_SET_TEST_CHANNEL );
-	dmaTrigger			( DMA_SET_TEST_CHANNEL );	
+	dmaSetChannel		( 0 );
+	dmaSetBlockSize		( 0 , strlen( dmaTxBuff) );
+	dmaSetSrcChDir		( 0 , dmaTxBuff , SrcDirectionInc , SrcReloadBlock );
+	dmaSetDestChDir		( 0 , (uint32_t*)&USARTE0.DATA , DestDirectionFixed , DestReloadBlock );
+	dmaSetRepeatCount	( 0 , 0 );	
+	dmaSetBurstLength	( 0 , BurstLength1Byte );
+	dmaSetSingleShot	( 0 , false );
+	dmaSetTriggerSource	( 0 , DMA_CH_TRIGSRC_USARTE0_DRE_gc );
+	dmaEnableChannel	( 0 );
+	dmaTrigger			( 0 );	
 	
 	return 0;
 }
