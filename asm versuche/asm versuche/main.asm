@@ -4,6 +4,13 @@
 ; Created: 09.09.2018 10:33:59
 ; Author : Jan Homann
 ;
+#include <m32def.inc>
+
+.dseg
+	msg:
+	.db "Hello World!" , 0 , 0 
+
+.cseg
 
 	.def tmp8 = r16
 	
@@ -15,12 +22,7 @@
 	.equ LED_bp			= 4		; Led Bit Position
 
 
-.macro ldi_hl 
-  ldi @0h,high(@1)
-  ldi @0l,low(@1)
-.endmacro
 
-	ldi_hl r15,r16
 
 initHardware:
 				/* StackPointer
@@ -40,25 +42,27 @@ initHardware:
 				ldi tmp8 , low(ramend) ; Stackpointer initalisieren ( low Byte von der Adresse )
 				out spl , tmp8 ; Addresse übergeben
 
-				//ldi tmp8 , 1<<LED_bp	; DatenRichtungsRegister Bit setzen
-				//out LED_DDR_PORT , tmp8	; Wert an DDRx übergeben
-				sbi  LED_DDR_PORT , LED_bp ; einzelnes Bit setzen
+				ldi tmp8 , 1<<LED_bp	; DatenRichtungsRegister Bit setzen
+				out LED_DDR_PORT , tmp8	; Wert an DDRx übergeben
 
+main:
 				
-				rcall ledOff ; Welcher Sprung ist dafür jetzt besser geeignet?
-				rcall delay10ms
-				rcall ledOn
-				rcall delay10ms
+				rcall ledOn ; Welcher Sprung ist dafür jetzt besser geeignet?
+				rcall delay100ms
+				rcall ledOff
+				rcall delay100ms
 
-/*	Led ausschalten
-*/
-ledOff:		
-				cbi LED_PORT , LED_bp
-				ret
+				rjmp main
 
 /*	Led einschalten
 */
-ledOn:			sbi LED_PORT , LED_bp
+ledOn:		
+				cbi LED_PORT , LED_bp
+				ret
+
+/*	Led ausschalten
+*/
+ledOff:			sbi LED_PORT , LED_bp
 				ret
 
 
@@ -66,34 +70,29 @@ ledOn:			sbi LED_PORT , LED_bp
 
 /*	Verzögerungsschleife(n)
 */
-#define CALC_DELAY_CYCLES( _ms_ )	  ( ( F_CPU / F_DIV ) / _ms_ )	
+.equ var10ms	= 16000
 .def delayHigh	= r24
 .def delayLow	= r25
 
-delay1ms:
-				ldi delayHigh , high( CALC_DELAY_CYCLES( 1 ) )
-				ldi delayLow , low( CALC_DELAY_CYCLES( 1 ) )
-				rcall delayLoop
-				ret
+
 
 delay10ms:
-				ldi delayHigh , high( CALC_DELAY_CYCLES( 10 ) )
-				ldi delayLow , low( CALC_DELAY_CYCLES( 10 ) )
+				ldi delayHigh , high( var10ms )
+				ldi delayLow  , low( var10ms )
 				rcall delayLoop
 				ret
-
 delay100ms:
-				ldi delayHigh , high( CALC_DELAY_CYCLES( 100 ) )
-				ldi delayLow , low( CALC_DELAY_CYCLES( 100 ) )
-				rcall delayLoop
+				ldi tmp8 , 100
+delay100msLoop :
+				rcall delay10ms
+				dec tmp8
+				brne delay100msLoop
 				ret
-
 
 /*	Hier werden hauptsächlich die Taktzyklen verbraten..
 */
 delayLoop:
-				dec delayHigh
-				dec delayLow
+				sbiw delayHigh : delayLow , 1
 				brne delayLoop
 				ret
 				
