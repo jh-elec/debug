@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Atmel Studio Solution File, Format Version 11.00
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "asm versuche", "asm versuche\asm versuche.asmproj", "{59B1D629-9DCC-43ED-A0FD-8AB0E4D622AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Datenblaetter", "Datenblaetter", "{29788F1B-9084-407F-95CB-FAC131CFC748}"
+	ProjectSection(SolutionItems) = preProject
+		\\filesvr\cam\Artikel\Datenblätter\045213\045213 Atmel.pdf = \\filesvr\cam\Artikel\Datenblätter\045213\045213 Atmel.pdf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
