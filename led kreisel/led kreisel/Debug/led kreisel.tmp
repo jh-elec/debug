@@ -1,0 +1,40 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.6</VERSION>
+ <DEVICE>"ATtiny2313"</DEVICE>
+ <WORKING_DIR>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATtiny_DFP\1.3.132\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\AVR Tools\AvrAssembler2\Appnotes</DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATtiny_DFP\1.3.132\avrasm\inc\tn2313def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\Debug\led kreisel.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>led kreisel.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>led kreisel.map</FILE>
+  <FILE>led kreisel.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <pwmx><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>19</LINE></pwmx>
+  <main><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>54</LINE></main>
+  <while><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>65</LINE></while>
+  <shift8Left><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>71</LINE></shift8Left>
+  <shift8LeftLoop><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>74</LINE></shift8LeftLoop>
+  <delay100ms><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>105</LINE></delay100ms>
+  <delay1ms><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>89</LINE></delay1ms>
+  <delay1msLoop><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>92</LINE></delay1msLoop>
+  <delay10ms><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>97</LINE></delay10ms>
+  <delay10msLoop><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>99</LINE></delay10msLoop>
+  <delay100msLoop><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>107</LINE></delay100msLoop>
+  <delay1sek><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>113</LINE></delay1sek>
+  <delay1sekLoop><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>115</LINE></delay1sekLoop>
+  <tim0CmpInt><FILE>C:\Users\Hm\Documents\Atmel Studio\7.0\debug\trunk\led kreisel\led kreisel\main.asm</FILE><LINE>122</LINE></tim0CmpInt>
+ </LABELS>
+</ASSEMBLER_INFO>

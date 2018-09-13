@@ -62,7 +62,7 @@ initHardware:
 				sei ; Interrupts freischalten
 
 main:			
-				rcall ledOn ; Welcher Sprung ist dafür jetzt besser geeignet? ; 3 Takte
+				rcall ledOn ;3 Takte
 				rcall delay100ms ; 3 Takte
 				rcall ledOff ; 3 Takte
 				rcall delay100ms ; 3 Takte
