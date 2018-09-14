@@ -12,22 +12,24 @@
 
 
 
-/*	Datensegment
-*/
+;##########################################################
+;	Datensegment
+;##########################################################
 .dseg
 
-pwmx: .db  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-
-/*	Kodesegment
-*/
+;##########################################################
+;	Kodesegment
+;##########################################################
 .cseg
 
-/*	Variablen
-*/
+;##########################################################
+;	Definitionen
+;##########################################################
 				.equ F_CPU		= 8000000
 				.equ F_DIV		= 1
 
 				.def tmp		= r16
+				.def eorReg		= r18
 				.equ LED1_DDR	= DDRD
 				.equ LED1_PORT	= PORTD
 
@@ -48,9 +50,15 @@ pwmx: .db  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 	cbi @0 , @1
 .endmacro
 
+;##########################################################
+;	Sprungmarken
+;##########################################################
+.org 0x0000 rjmp main
+.org 0x0004 rjmp timer0CmpInt
 				
-/*	Hardware Initalisieren
-*/
+;##########################################################
+;	Hardware initalisieren
+;##########################################################
 main:
 				
 				ldi tmp , low( RAMEND ) ; Addresse vom Ende des RAM´s ; 1 Takt
@@ -60,28 +68,34 @@ main:
 				out LED1_DDR , tmp ; Ports als Ausgänge schalten ; 1 Takt
 				out LED2_DDR , tmp ; .. ; 1 Takt
 
-
+				ldi tmp , ( 1<<WGM12 | ( 1<<CS12 | 1<<CS10 ) ) ; Normal Mode -> CTC
+				out TCCR1B , tmp ; Register beschreiben
 				
-while:
-			rcall shift8Left
+				ldi tmp , 1<<OCIE1A ; Output Compare Match Enable
+				out TIMSK , tmp ; Timer Interrupt Register beschreiben
 
-rjmp while
+				ldi tmp , 255 ; Output Compare Match Wert
+				out OCR1AL , tmp ; .. Register beschreiben
 
+				ldi tmp , 100 ; Output Compare Match Wert
+				out OCR1AH , tmp ; .. Register beschreiben
+				
+				sei ; Interrupts freigeben
+				
+mainLoop:
+				rjmp mainLoop
 
-shift8Left:
-				ldi tmp , 1<<0
-				ldi r22 , 8
-shift8LeftLoop:
-				out PORTD , tmp
-				out PORTB , tmp
-				lsl tmp 
-				rcall delay100ms
-				dec r22
-				brne shift8LeftLoop
-				ret
-
-
-
+;##########################################################
+;	Timer Interrupt - Compare Match A
+;##########################################################
+timer0CmpInt:
+				eor eorReg, tmp
+				andi eorReg , 0b00000001
+				out PORTB , eorReg
+				reti
+;##########################################################
+;	Delay Funktionen
+;##########################################################
 .def cntHigh	= r24
 .def cntLow		= r25
 .equ PRELOAD	= 10 ; 1 Millisekunde
@@ -117,6 +131,8 @@ delay1sekLoop:
 				dec r19
 				brne delay1sekLoop
 				ret	
-				
-				
-tim0CmpInt:								 
+;##########################################################
+;	Delay Funktionen Ende
+;##########################################################				
+
+				 
