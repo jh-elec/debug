@@ -11,7 +11,6 @@
 */
 
 
-
 ;##########################################################
 ;	Datensegment
 ;##########################################################
@@ -29,7 +28,7 @@
 				.equ F_DIV		= 1
 
 				.def tmp		= r16
-				.def eorReg		= r18
+				.def toggleBit	= r18
 				.equ LED1_DDR	= DDRD
 				.equ LED1_PORT	= PORTD
 
@@ -54,7 +53,7 @@
 ;	Sprungmarken
 ;##########################################################
 .org 0x0000 rjmp main
-.org 0x0004 rjmp timer0CmpInt
+.org 0x0004 rjmp timer1CmpAInt
 				
 ;##########################################################
 ;	Hardware initalisieren
@@ -74,11 +73,15 @@ main:
 				ldi tmp , 1<<OCIE1A ; Output Compare Match Enable
 				out TIMSK , tmp ; Timer Interrupt Register beschreiben
 
-				ldi tmp , 255 ; Output Compare Match Wert
+				/*	Timer auf 1Sek. Basis konfigurieren
+				*/
+				ldi tmp , high(0x1E83) ; Output Compare Match Wert
+				out OCR1AH , tmp ; .. Register beschreiben
+
+				ldi tmp , low(0x1E83) ; Output Compare Match Wert
 				out OCR1AL , tmp ; .. Register beschreiben
 
-				ldi tmp , 100 ; Output Compare Match Wert
-				out OCR1AH , tmp ; .. Register beschreiben
+
 				
 				sei ; Interrupts freigeben
 				
@@ -88,10 +91,10 @@ mainLoop:
 ;##########################################################
 ;	Timer Interrupt - Compare Match A
 ;##########################################################
-timer0CmpInt:
-				eor eorReg, tmp
-				andi eorReg , 0b00000001
-				out PORTB , eorReg
+timer1CmpAInt:
+				ldi tmp, 1
+				eor toggleBit, tmp
+				out PORTB , toggleBit
 				reti
 ;##########################################################
 ;	Delay Funktionen

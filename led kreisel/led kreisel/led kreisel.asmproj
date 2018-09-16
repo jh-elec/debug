@@ -39,7 +39,7 @@
       </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.ispmk2</avrtool>
-    <avrtoolserialnumber>000200100760</avrtoolserialnumber>
+    <avrtoolserialnumber>000200063541</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x1E910A</avrdeviceexpectedsignature>
     <avrtoolinterface>ISP</avrtoolinterface>
     <avrtoolinterfaceclock>125000</avrtoolinterfaceclock>
@@ -51,28 +51,29 @@
         <InterfaceName>ISP</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.ispmk2</ToolType>
-      <ToolNumber>000200100760</ToolNumber>
+      <ToolNumber>000200063541</ToolNumber>
       <ToolName>AVRISP mkII</ToolName>
     </com_atmel_avrdbg_tool_ispmk2>
     <com_atmel_avrdbg_tool_simulator>
-      <ToolOptions xmlns="">
+      <ToolOptions>
         <InterfaceProperties>
         </InterfaceProperties>
-        <InterfaceName>
-        </InterfaceName>
+        <InterfaceName>ISP</InterfaceName>
       </ToolOptions>
-      <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
-      <ToolNumber xmlns="">
+      <ToolType>com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolNumber>
       </ToolNumber>
-      <ToolName xmlns="">Simulator</ToolName>
+      <ToolName>Simulator</ToolName>
     </com_atmel_avrdbg_tool_simulator>
+    <ResetRule>0</ResetRule>
+    <EraseKey />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <AvrAssembler>
         <avrasm.assembler.general.AdditionalIncludeDirectories>
           <ListValues>
-            <Value>%24(PackRepoDir)\Atmel\ATtiny_DFP\1.3.132\avrasm\inc</Value>
+            <Value>%24(PackRepoDir)\Atmel\ATtiny_DFP\1.3.172\avrasm\inc</Value>
           </ListValues>
         </avrasm.assembler.general.AdditionalIncludeDirectories>
         <avrasm.assembler.general.IncludeFile>tn2313def.inc</avrasm.assembler.general.IncludeFile>
@@ -85,7 +86,7 @@
       <AvrAssembler>
         <avrasm.assembler.general.AdditionalIncludeDirectories>
           <ListValues>
-            <Value>%24(PackRepoDir)\Atmel\ATtiny_DFP\1.3.132\avrasm\inc</Value>
+            <Value>%24(PackRepoDir)\Atmel\ATtiny_DFP\1.3.172\avrasm\inc</Value>
           </ListValues>
         </avrasm.assembler.general.AdditionalIncludeDirectories>
         <avrasm.assembler.general.IncludeFile>tn2313def.inc</avrasm.assembler.general.IncludeFile>
