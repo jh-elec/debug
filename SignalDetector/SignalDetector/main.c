@@ -19,7 +19,7 @@
 
 #define MAX_PULSES_OF_SIGNALS	10
 #define MAX_EDGES_OF_SIGNAL		( MAX_PULSES_OF_SIGNALS * 2 )
-#define DETECTING_EDGE			RISING
+#define DETECTING_EDGE			FALLING
 
 #define SIGNAL_ANNAHME_DDR		DDRB
 #define SIGNAL_ANNAHME_PORT		PORTB
@@ -72,7 +72,8 @@ typedef struct
 {
 	uint8_t		uwLength[MAX_EDGES_OF_SIGNAL]; // steigende + fallende Flanke(n)
 	uint8_t		uiIndex;
-	uint32_t	Beginn;
+	uint32_t	ulBeginn;
+	uint32_t	ulTimeout;
 	
 	union
 	{
@@ -90,25 +91,9 @@ typedef struct
 volatile Pulse_t Signal;
 
 void InputCompareInit( void )
-{
-	/*	+++Register: TCCR1B+++
-	+	• Bit 7 – ICNC1: Input Capture Noise Canceler
-	+	Setting this bit (to one) activates the Input Capture Noise Canceler. When the Noise Canceler is
-	+	activated, the input from the Input Capture Pin (ICP1) is filtered. The filter function requires four
-	+	successive equal valued samples of the ICP1 pin for changing its output. The Input Capture is
-	+	therefore delayed by four Oscillator cycles when the Noise Canceler is enabled.
-	+	
-	+	• Bit 6 – ICES1: Input Capture Edge Select
-	+	This bit selects which edge on the Input Capture Pin (ICP1) that is used to trigger a capture
-	+	event. When the ICES1 bit is written to zero, a falling (negative) edge is used as trigger, and
-	+	when the ICES1 bit is written to one, a rising (positive) edge will trigger the capture.
-	+	When a capture is triggered according to the ICES1 setting, the counter value is copied into the
-	+	Input Capture Register (ICR1). The event will also set the Input Capture Flag (ICF1), and this
-	+	can be used to cause an Input Capture Interrupt, if this interrupt is enabled.
-	+	When the ICR1 is used as TOP value (see description of the WGM13:0 bits located in the
-	+	TCCR1A and the TCCR1B Register), the ICP1 is disconnected and consequently the Input Capture
-	+	function is disabled.
-	*/	
+{	
+	INPUT_CAPTURE_DDR &= ~(1<<INPUT_CAPTURE_BP);
+	INPUT_CAPTURE_PORT |= (1<<INPUT_CAPTURE_BP);
 	
 	#if ( DETECTING_EDGE == RISING )
 	TCCR1B |= ((1<<ICES1) | Timer1Prescaler[TIMER1_PRESCALER_1]); // Bei steigender Flanke triggern ; Prescaler einstellen
@@ -116,24 +101,18 @@ void InputCompareInit( void )
 	TCCR1B |= Timer1Prescaler[TIMER1_PRESCALER_1]; // Bei fallender Flanke triggern ; Prescaler einstellen
 	#endif
 	
-	
-	/* +++Register: TIMSK+++
-	+	• Bit 5 – TICIE1: Timer/Counter1, Input Capture Interrupt Enable
-	+	When this bit is written to one, and the I-flag in the Status Register is set (interrupts globally
-	+	enabled), the Timer/Counter1 Input Capture Interrupt is enabled. The corresponding Interrupt
-	+	Vector (See “Interrupts” on page 44.) is executed when the ICF1 Flag, located in TIFR, is set.
-	*/
 	TIMSK1 |= (1<<ICIE1); // Input Capture Interrupt aktivieren
 	
 	sei(); // Interrupts aktivieren	
 }
 
-
 ISR(TIMER1_CAPT_vect)
 {
-	Signal.b0 = 1; // Es kommt ein neues Signal rein.. Zähler fängt in der main an zu zählen
-	Signal.Beginn = 0;
+	Signal.b0 = 1;
 	Signal.uiIndex++;
+	
+	Signal.ulBeginn = 0;
+	Signal.ulTimeout = 0;
 	
 	#ifdef _DEBUG_
 	DEBUG_LED_PORT |= (1<<DEBUG_LED_BP);
@@ -169,42 +148,43 @@ int main(void)
 	}
 	
     while (1) 
-    {
+    {	
 		if ( Signal.b0 )
 		{
-			if ( Signal.Beginn++ >= 30e3 )
+			Signal.b3 = 0; // Timeout Flag löschen...
+			if ( Signal.ulBeginn++ >= 300 )
 			{
 				Signal.b0 = 0;
-				Signal.Beginn = 0;
+				Signal.ulBeginn = 0;
 				
-				uint8_t Edges = Signal.uiIndex; // Aktuelle Anzahl an Flanken merken
+				Signal.uiIndex; // Aktuelle Anzahl an Flanken merken
 							
-				if ( Edges == 11 )// Signal -> Anlage sperren
+				if ( Signal.uiIndex == 11 )// Signal -> Anlage sperren
 				{
 					SIGNAL_SPERREN_PORT |= (1<<SIGNAL_SPERREN_BP);
-					_delay_ms(500);
+					_delay_ms(50);
 					SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
-					_delay_ms(500);
+					_delay_ms(50);
 					Signal.uiIndex = 0;
-				} else if	( Edges == 14 )// Signal -> Annahme
+				} else if	( Signal.uiIndex == 14 )// Signal -> Annahme
 				{
 					SIGNAL_ANNAHME_PORT |= (1<<SIGNAL_ANNAHME_BP);
-					_delay_ms(500);
+					_delay_ms(50);
 					SIGNAL_ANNAHME_PORT &= ~(1<<SIGNAL_ANNAHME_BP);
-					_delay_ms(500);
+					_delay_ms(50);
 					Signal.uiIndex = 0;
-				} else if	( Edges >= 15 && Edges <= 17 )// Signal -> Klingel
+				} else if	( Signal.uiIndex >= 15 )// Signal -> Klingel
 				{
 					SIGNAL_KLINGEL_PORT |= (1<<SIGNAL_KLINGEL_BP);
-					_delay_ms(500);
+					_delay_ms(50);
 					SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
-					_delay_ms(500);
+					_delay_ms(50);
 					Signal.uiIndex = 0;
 				}
 				else
 				{
 					Signal.uiIndex = 0;
-					for ( uint8_t i = 0 ; i < 10 ; i++ )
+					for ( uint8_t i = 0 ; i < 3 ; i++ )
 					{
 						DEBUG_LED_PORT &= ~(1<<DEBUG_LED_BP);
 						SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
@@ -221,6 +201,33 @@ int main(void)
 						SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
 						SIGNAL_ANNAHME_PORT &= ~(1<<SIGNAL_ANNAHME_BP);
 						SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
+				}
+				DEBUG_LED_PORT &= ~(1<<DEBUG_LED_BP);
+			}
+		}else
+		{
+			static uint32_t ulStandbyBlink = 0;
+			if ( !Signal.b3 ) // Signal Timeout bzw. lange kein Signal erkannt ( Signal.b3 == 1 )
+			{
+				if ( Signal.ulTimeout++ > 40e5 )
+				{
+					Signal.b3 = 1; // Timeout bzw. Standby		
+				}	
+			}else
+			{
+				if ( ulStandbyBlink < 20e5 )
+				{
+					SIGNAL_SPERREN_PORT |= (1<<SIGNAL_SPERREN_BP);
+					SIGNAL_ANNAHME_PORT |= (1<<SIGNAL_ANNAHME_BP);
+					SIGNAL_KLINGEL_PORT |= (1<<SIGNAL_KLINGEL_BP);
+				}else if ( ulStandbyBlink > 20e5 && ulStandbyBlink < 40e5 )
+				{
+					SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
+					SIGNAL_ANNAHME_PORT &= ~(1<<SIGNAL_ANNAHME_BP);
+					SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
+				}else
+				{
+					ulStandbyBlink = 0;
 				}
 			}
 		}
