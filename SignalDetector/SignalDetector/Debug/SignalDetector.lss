@@ -3,31 +3,31 @@ SignalDetector.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000006  00800100  00000438  000004cc  2**0
+  0 .data         00000006  00800100  00000224  000002b8  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000438  00000000  00000000  00000094  2**1
+  1 .text         00000224  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000022  00800106  00800106  000004d2  2**0
+  2 .bss          0000000a  00800106  00800106  000002be  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000004d2  2**0
+  3 .comment      00000030  00000000  00000000  000002be  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000504  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002f0  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000030  00000000  00000000  00000544  2**0
+  5 .debug_aranges 00000030  00000000  00000000  00000330  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000ad5  00000000  00000000  00000574  2**0
+  6 .debug_info   000009c8  00000000  00000000  00000360  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000772  00000000  00000000  00001049  2**0
+  7 .debug_abbrev 0000074e  00000000  00000000  00000d28  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000004c1  00000000  00000000  000017bb  2**0
+  8 .debug_line   0000037d  00000000  00000000  00001476  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000060  00000000  00000000  00001c7c  2**2
+  9 .debug_frame  00000060  00000000  00000000  000017f4  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000483  00000000  00000000  00001cdc  2**0
+ 10 .debug_str    000004a5  00000000  00000000  00001854  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000003a8  00000000  00000000  0000215f  2**0
+ 11 .debug_loc    00000240  00000000  00000000  00001cf9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000038  00000000  00000000  00002507  2**0
+ 12 .debug_ranges 00000020  00000000  00000000  00001f39  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -43,7 +43,7 @@ Disassembly of section .text:
   1c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   20:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   24:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  28:	0c 94 64 00 	jmp	0xc8	; 0xc8 <__vector_10>
+  28:	0c 94 71 00 	jmp	0xe2	; 0xe2 <__vector_10>
   2c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   30:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   34:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -72,8 +72,8 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e8 e3       	ldi	r30, 0x38	; 56
-  7c:	f4 e0       	ldi	r31, 0x04	; 4
+  7a:	e4 e2       	ldi	r30, 0x24	; 36
+  7c:	f2 e0       	ldi	r31, 0x02	; 2
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
   82:	0d 92       	st	X+, r0
@@ -91,644 +91,305 @@ Disassembly of section .text:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	a8 32       	cpi	r26, 0x28	; 40
+  94:	a0 31       	cpi	r26, 0x10	; 16
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
-  9a:	0e 94 87 00 	call	0x10e	; 0x10e <main>
-  9e:	0c 94 1a 02 	jmp	0x434	; 0x434 <_exit>
+  9a:	0e 94 94 00 	call	0x128	; 0x128 <main>
+  9e:	0c 94 10 01 	jmp	0x220	; 0x220 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000000a6 <InputCompareInit>:
-}Pulse_t;
-volatile Pulse_t Signal;
+	RISING	
+} InputCompareMode_t;
 
-void InputCompareInit( void )
+void InputCompareInit( InputCompareMode_t InputCompareMode )
 {	
 	INPUT_CAPTURE_DDR &= ~(1<<INPUT_CAPTURE_BP);
   a6:	20 98       	cbi	0x04, 0	; 4
 	INPUT_CAPTURE_PORT |= (1<<INPUT_CAPTURE_BP);
   a8:	28 9a       	sbi	0x05, 0	; 5
-	
-	#if ( DETECTING_EDGE == RISING )
-	TCCR1B |= ((1<<ICES1) | Timer1Prescaler[TIMER1_PRESCALER_1]); // Bei steigender Flanke triggern ; Prescaler einstellen
-  aa:	e1 e8       	ldi	r30, 0x81	; 129
-  ac:	f0 e0       	ldi	r31, 0x00	; 0
-  ae:	90 81       	ld	r25, Z
-  b0:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <Timer1Prescaler>
-  b4:	89 2b       	or	r24, r25
-  b6:	80 64       	ori	r24, 0x40	; 64
-  b8:	80 83       	st	Z, r24
-	#elif ( DETECTING_EDGE == FALLING )
-	TCCR1B |= Timer1Prescaler[TIMER1_PRESCALER_1]; // Bei fallender Flanke triggern ; Prescaler einstellen
-	#endif
-	
+
+	if ( InputCompareMode == FALLING )
+  aa:	81 11       	cpse	r24, r1
+  ac:	09 c0       	rjmp	.+18     	; 0xc0 <InputCompareInit+0x1a>
+	{	
+		TCCR1B |= ((1<<ICNC1) | (Timer1Prescaler[TIMER1_PRESCALER_1])); // Bei fallender Flanke triggern ; Prescaler einstellen
+  ae:	e1 e8       	ldi	r30, 0x81	; 129
+  b0:	f0 e0       	ldi	r31, 0x00	; 0
+  b2:	90 81       	ld	r25, Z
+  b4:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <Timer1Prescaler>
+  b8:	89 2b       	or	r24, r25
+  ba:	80 68       	ori	r24, 0x80	; 128
+  bc:	80 83       	st	Z, r24
+  be:	0a c0       	rjmp	.+20     	; 0xd4 <InputCompareInit+0x2e>
+	}else if ( InputCompareMode == RISING )
+  c0:	81 30       	cpi	r24, 0x01	; 1
+  c2:	41 f4       	brne	.+16     	; 0xd4 <InputCompareInit+0x2e>
+	{
+		TCCR1B |= ( (1<<ICNC1) | (1<<ICES1) | Timer1Prescaler[TIMER1_PRESCALER_1]); // Bei steigender Flanke triggern ; Prescaler einstellen		
+  c4:	e1 e8       	ldi	r30, 0x81	; 129
+  c6:	f0 e0       	ldi	r31, 0x00	; 0
+  c8:	90 81       	ld	r25, Z
+  ca:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <Timer1Prescaler>
+  ce:	89 2b       	or	r24, r25
+  d0:	80 6c       	ori	r24, 0xC0	; 192
+  d2:	80 83       	st	Z, r24
+	}
+		
 	TIMSK1 |= (1<<ICIE1); // Input Capture Interrupt aktivieren
-  ba:	ef e6       	ldi	r30, 0x6F	; 111
-  bc:	f0 e0       	ldi	r31, 0x00	; 0
-  be:	80 81       	ld	r24, Z
-  c0:	80 62       	ori	r24, 0x20	; 32
-  c2:	80 83       	st	Z, r24
+  d4:	ef e6       	ldi	r30, 0x6F	; 111
+  d6:	f0 e0       	ldi	r31, 0x00	; 0
+  d8:	80 81       	ld	r24, Z
+  da:	80 62       	ori	r24, 0x20	; 32
+  dc:	80 83       	st	Z, r24
 	
 	sei(); // Interrupts aktivieren	
-  c4:	78 94       	sei
-  c6:	08 95       	ret
+  de:	78 94       	sei
+  e0:	08 95       	ret
 
-000000c8 <__vector_10>:
+000000e2 <__vector_10>:
 }
 
 ISR(TIMER1_CAPT_vect)
 {
-  c8:	1f 92       	push	r1
-  ca:	0f 92       	push	r0
-  cc:	0f b6       	in	r0, 0x3f	; 63
-  ce:	0f 92       	push	r0
-  d0:	11 24       	eor	r1, r1
-  d2:	8f 93       	push	r24
-  d4:	ef 93       	push	r30
-  d6:	ff 93       	push	r31
+  e2:	1f 92       	push	r1
+  e4:	0f 92       	push	r0
+  e6:	0f b6       	in	r0, 0x3f	; 63
+  e8:	0f 92       	push	r0
+  ea:	11 24       	eor	r1, r1
+  ec:	8f 93       	push	r24
+  ee:	ef 93       	push	r30
+  f0:	ff 93       	push	r31
 	Signal.b0 = 1;
-  d8:	e7 e2       	ldi	r30, 0x27	; 39
-  da:	f1 e0       	ldi	r31, 0x01	; 1
-  dc:	80 81       	ld	r24, Z
-  de:	81 60       	ori	r24, 0x01	; 1
-  e0:	80 83       	st	Z, r24
+  f2:	ef e0       	ldi	r30, 0x0F	; 15
+  f4:	f1 e0       	ldi	r31, 0x01	; 1
+  f6:	80 81       	ld	r24, Z
+  f8:	81 60       	ori	r24, 0x01	; 1
+  fa:	80 83       	st	Z, r24
 	Signal.uiIndex++;
-  e2:	ea e0       	ldi	r30, 0x0A	; 10
-  e4:	f1 e0       	ldi	r31, 0x01	; 1
-  e6:	84 89       	ldd	r24, Z+20	; 0x14
-  e8:	8f 5f       	subi	r24, 0xFF	; 255
-  ea:	84 8b       	std	Z+20, r24	; 0x14
+  fc:	e6 e0       	ldi	r30, 0x06	; 6
+  fe:	f1 e0       	ldi	r31, 0x01	; 1
+ 100:	80 81       	ld	r24, Z
+ 102:	8f 5f       	subi	r24, 0xFF	; 255
+ 104:	80 83       	st	Z, r24
 	
 	Signal.ulBeginn = 0;
-  ec:	15 8a       	std	Z+21, r1	; 0x15
-  ee:	16 8a       	std	Z+22, r1	; 0x16
-  f0:	17 8a       	std	Z+23, r1	; 0x17
-  f2:	10 8e       	std	Z+24, r1	; 0x18
+ 106:	11 82       	std	Z+1, r1	; 0x01
+ 108:	12 82       	std	Z+2, r1	; 0x02
+ 10a:	13 82       	std	Z+3, r1	; 0x03
+ 10c:	14 82       	std	Z+4, r1	; 0x04
 	Signal.ulTimeout = 0;
-  f4:	11 8e       	std	Z+25, r1	; 0x19
-  f6:	12 8e       	std	Z+26, r1	; 0x1a
-  f8:	13 8e       	std	Z+27, r1	; 0x1b
-  fa:	14 8e       	std	Z+28, r1	; 0x1c
+ 10e:	15 82       	std	Z+5, r1	; 0x05
+ 110:	16 82       	std	Z+6, r1	; 0x06
+ 112:	17 82       	std	Z+7, r1	; 0x07
+ 114:	10 86       	std	Z+8, r1	; 0x08
 	
 	#ifdef _DEBUG_
-	DEBUG_LED_PORT |= (1<<DEBUG_LED_BP);
-  fc:	2d 9a       	sbi	0x05, 5	; 5
+		DEBUG_LED_PORT |= (1<<DEBUG_LED_BP);
+ 116:	2d 9a       	sbi	0x05, 5	; 5
 	#endif
 }
-  fe:	ff 91       	pop	r31
- 100:	ef 91       	pop	r30
- 102:	8f 91       	pop	r24
- 104:	0f 90       	pop	r0
- 106:	0f be       	out	0x3f, r0	; 63
- 108:	0f 90       	pop	r0
- 10a:	1f 90       	pop	r1
- 10c:	18 95       	reti
+ 118:	ff 91       	pop	r31
+ 11a:	ef 91       	pop	r30
+ 11c:	8f 91       	pop	r24
+ 11e:	0f 90       	pop	r0
+ 120:	0f be       	out	0x3f, r0	; 63
+ 122:	0f 90       	pop	r0
+ 124:	1f 90       	pop	r1
+ 126:	18 95       	reti
 
-0000010e <main>:
+00000128 <main>:
 
 
 int main(void)
 {
 	DEBUG_LED_DDR		|= (1<<DEBUG_LED_BP);
- 10e:	25 9a       	sbi	0x04, 5	; 4
+ 128:	25 9a       	sbi	0x04, 5	; 4
 	SIGNAL_ANNAHME_DDR	|= (1<<SIGNAL_ANNAHME_BP);
- 110:	24 9a       	sbi	0x04, 4	; 4
+ 12a:	24 9a       	sbi	0x04, 4	; 4
 	SIGNAL_KLINGEL_DDR	|= (1<<SIGNAL_KLINGEL_BP);
- 112:	22 9a       	sbi	0x04, 2	; 4
+ 12c:	22 9a       	sbi	0x04, 2	; 4
 	SIGNAL_SPERREN_DDR	|= (1<<SIGNAL_SPERREN_BP);
- 114:	23 9a       	sbi	0x04, 3	; 4
+ 12e:	23 9a       	sbi	0x04, 3	; 4
 		
 	/*	Input Compare für Flankenzählung konfigurieren
 	*/
-	InputCompareInit();
- 116:	0e 94 53 00 	call	0xa6	; 0xa6 <InputCompareInit>
+	InputCompareInit( FALLING );
+ 130:	80 e0       	ldi	r24, 0x00	; 0
+ 132:	0e 94 53 00 	call	0xa6	; 0xa6 <InputCompareInit>
 	
 	/*	Struktur initalisieren
 	*/
 	memset( (Pulse_t*)&Signal , 0 , sizeof(Pulse_t) );
- 11a:	8e e1       	ldi	r24, 0x1E	; 30
- 11c:	ea e0       	ldi	r30, 0x0A	; 10
- 11e:	f1 e0       	ldi	r31, 0x01	; 1
- 120:	df 01       	movw	r26, r30
- 122:	1d 92       	st	X+, r1
- 124:	8a 95       	dec	r24
- 126:	e9 f7       	brne	.-6      	; 0x122 <main+0x14>
- 128:	8a e0       	ldi	r24, 0x0A	; 10
+ 136:	8a e0       	ldi	r24, 0x0A	; 10
+ 138:	e6 e0       	ldi	r30, 0x06	; 6
+ 13a:	f1 e0       	ldi	r31, 0x01	; 1
+ 13c:	df 01       	movw	r26, r30
+ 13e:	1d 92       	st	X+, r1
+ 140:	8a 95       	dec	r24
+ 142:	e9 f7       	brne	.-6      	; 0x13e <main+0x16>
 	
-	for ( uint8_t i = 0 ; i < 10 ; i++ )
-	{
-		SIGNAL_SPERREN_PORT |= (1<<SIGNAL_SPERREN_BP);
- 12a:	2b 9a       	sbi	0x05, 3	; 5
-		SIGNAL_ANNAHME_PORT |= (1<<SIGNAL_ANNAHME_BP);
- 12c:	2c 9a       	sbi	0x05, 4	; 5
-		SIGNAL_KLINGEL_PORT |= (1<<SIGNAL_KLINGEL_BP);
- 12e:	2a 9a       	sbi	0x05, 2	; 5
+    while (1) 
+    {	
+		if ( Signal.b0 )
+ 144:	ef e0       	ldi	r30, 0x0F	; 15
+ 146:	f1 e0       	ldi	r31, 0x01	; 1
+		{
+			if ( Signal.ulBeginn++ >= 300 )
+ 148:	c6 e0       	ldi	r28, 0x06	; 6
+ 14a:	d1 e0       	ldi	r29, 0x01	; 1
+	*/
+	memset( (Pulse_t*)&Signal , 0 , sizeof(Pulse_t) );
+	
+    while (1) 
+    {	
+		if ( Signal.b0 )
+ 14c:	80 81       	ld	r24, Z
+ 14e:	80 ff       	sbrs	r24, 0
+ 150:	fd cf       	rjmp	.-6      	; 0x14c <main+0x24>
+		{
+			if ( Signal.ulBeginn++ >= 300 )
+ 152:	89 81       	ldd	r24, Y+1	; 0x01
+ 154:	9a 81       	ldd	r25, Y+2	; 0x02
+ 156:	ab 81       	ldd	r26, Y+3	; 0x03
+ 158:	bc 81       	ldd	r27, Y+4	; 0x04
+ 15a:	ac 01       	movw	r20, r24
+ 15c:	bd 01       	movw	r22, r26
+ 15e:	4f 5f       	subi	r20, 0xFF	; 255
+ 160:	5f 4f       	sbci	r21, 0xFF	; 255
+ 162:	6f 4f       	sbci	r22, 0xFF	; 255
+ 164:	7f 4f       	sbci	r23, 0xFF	; 255
+ 166:	49 83       	std	Y+1, r20	; 0x01
+ 168:	5a 83       	std	Y+2, r21	; 0x02
+ 16a:	6b 83       	std	Y+3, r22	; 0x03
+ 16c:	7c 83       	std	Y+4, r23	; 0x04
+ 16e:	8c 32       	cpi	r24, 0x2C	; 44
+ 170:	91 40       	sbci	r25, 0x01	; 1
+ 172:	a1 05       	cpc	r26, r1
+ 174:	b1 05       	cpc	r27, r1
+ 176:	50 f3       	brcs	.-44     	; 0x14c <main+0x24>
+			{
+				Signal.b0 = 0;
+ 178:	80 81       	ld	r24, Z
+ 17a:	8e 7f       	andi	r24, 0xFE	; 254
+ 17c:	80 83       	st	Z, r24
+				Signal.ulBeginn = 0;
+ 17e:	19 82       	std	Y+1, r1	; 0x01
+ 180:	1a 82       	std	Y+2, r1	; 0x02
+ 182:	1b 82       	std	Y+3, r1	; 0x03
+ 184:	1c 82       	std	Y+4, r1	; 0x04
+
+				DEBUG_LED_PORT &= ~(1<<DEBUG_LED_BP);
+ 186:	2d 98       	cbi	0x05, 5	; 5
+					
+				if ( Signal.uiIndex == 11 )// Signal -> Anlage sperren
+ 188:	88 81       	ld	r24, Y
+ 18a:	8b 30       	cpi	r24, 0x0B	; 11
+ 18c:	b1 f4       	brne	.+44     	; 0x1ba <main+0x92>
+				{
+					SIGNAL_SPERREN_PORT |= (1<<SIGNAL_SPERREN_BP);
+ 18e:	2b 9a       	sbi	0x05, 3	; 5
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 130:	bf e7       	ldi	r27, 0x7F	; 127
- 132:	e8 e3       	ldi	r30, 0x38	; 56
- 134:	f1 e0       	ldi	r31, 0x01	; 1
- 136:	b1 50       	subi	r27, 0x01	; 1
- 138:	e0 40       	sbci	r30, 0x00	; 0
- 13a:	f0 40       	sbci	r31, 0x00	; 0
- 13c:	e1 f7       	brne	.-8      	; 0x136 <main+0x28>
- 13e:	00 c0       	rjmp	.+0      	; 0x140 <main+0x32>
- 140:	00 00       	nop
-		_delay_ms(25);
-		SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
- 142:	2b 98       	cbi	0x05, 3	; 5
-		SIGNAL_ANNAHME_PORT &= ~(1<<SIGNAL_ANNAHME_BP);
- 144:	2c 98       	cbi	0x05, 4	; 5
-		SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
- 146:	2a 98       	cbi	0x05, 2	; 5
- 148:	2f ef       	ldi	r18, 0xFF	; 255
- 14a:	31 ee       	ldi	r19, 0xE1	; 225
- 14c:	94 e0       	ldi	r25, 0x04	; 4
- 14e:	21 50       	subi	r18, 0x01	; 1
- 150:	30 40       	sbci	r19, 0x00	; 0
- 152:	90 40       	sbci	r25, 0x00	; 0
- 154:	e1 f7       	brne	.-8      	; 0x14e <main+0x40>
- 156:	00 c0       	rjmp	.+0      	; 0x158 <main+0x4a>
- 158:	00 00       	nop
- 15a:	81 50       	subi	r24, 0x01	; 1
-	
-	/*	Struktur initalisieren
-	*/
-	memset( (Pulse_t*)&Signal , 0 , sizeof(Pulse_t) );
-	
-	for ( uint8_t i = 0 ; i < 10 ; i++ )
- 15c:	31 f7       	brne	.-52     	; 0x12a <main+0x1c>
-		_delay_ms(100);
-	}
-	
-    while (1) 
-    {	
-		if ( Signal.b0 )
- 15e:	c7 e2       	ldi	r28, 0x27	; 39
- 160:	d1 e0       	ldi	r29, 0x01	; 1
-		}else
-		{
-			static uint32_t ulStandbyBlink = 0;
-			if ( !Signal.b3 ) // Signal Timeout bzw. lange kein Signal erkannt ( Signal.b3 == 1 )
-			{
-				if ( Signal.ulTimeout++ > 40e5 )
- 162:	0a e0       	ldi	r16, 0x0A	; 10
- 164:	11 e0       	ldi	r17, 0x01	; 1
-		_delay_ms(100);
-	}
-	
-    while (1) 
-    {	
-		if ( Signal.b0 )
- 166:	88 81       	ld	r24, Y
- 168:	80 ff       	sbrs	r24, 0
- 16a:	9b c0       	rjmp	.+310    	; 0x2a2 <main+0x194>
-		{
-			Signal.b3 = 0; // Timeout Flag löschen...
- 16c:	88 81       	ld	r24, Y
- 16e:	8e 7f       	andi	r24, 0xFE	; 254
- 170:	88 83       	st	Y, r24
-			if ( Signal.ulBeginn++ >= 300 )
- 172:	f8 01       	movw	r30, r16
- 174:	85 89       	ldd	r24, Z+21	; 0x15
- 176:	96 89       	ldd	r25, Z+22	; 0x16
- 178:	a7 89       	ldd	r26, Z+23	; 0x17
- 17a:	b0 8d       	ldd	r27, Z+24	; 0x18
- 17c:	ac 01       	movw	r20, r24
- 17e:	bd 01       	movw	r22, r26
- 180:	4f 5f       	subi	r20, 0xFF	; 255
- 182:	5f 4f       	sbci	r21, 0xFF	; 255
- 184:	6f 4f       	sbci	r22, 0xFF	; 255
- 186:	7f 4f       	sbci	r23, 0xFF	; 255
- 188:	45 8b       	std	Z+21, r20	; 0x15
- 18a:	56 8b       	std	Z+22, r21	; 0x16
- 18c:	67 8b       	std	Z+23, r22	; 0x17
- 18e:	70 8f       	std	Z+24, r23	; 0x18
- 190:	8c 32       	cpi	r24, 0x2C	; 44
- 192:	91 40       	sbci	r25, 0x01	; 1
- 194:	a1 05       	cpc	r26, r1
- 196:	b1 05       	cpc	r27, r1
- 198:	30 f3       	brcs	.-52     	; 0x166 <main+0x58>
-			{
-				Signal.b0 = 0;
- 19a:	88 81       	ld	r24, Y
- 19c:	8e 7f       	andi	r24, 0xFE	; 254
- 19e:	88 83       	st	Y, r24
-				Signal.ulBeginn = 0;
- 1a0:	d8 01       	movw	r26, r16
- 1a2:	55 96       	adiw	r26, 0x15	; 21
- 1a4:	1d 92       	st	X+, r1
- 1a6:	1d 92       	st	X+, r1
- 1a8:	1d 92       	st	X+, r1
- 1aa:	1c 92       	st	X, r1
- 1ac:	58 97       	sbiw	r26, 0x18	; 24
-				
-				Signal.uiIndex; // Aktuelle Anzahl an Flanken merken
- 1ae:	54 96       	adiw	r26, 0x14	; 20
- 1b0:	8c 91       	ld	r24, X
- 1b2:	54 97       	sbiw	r26, 0x14	; 20
-							
-				if ( Signal.uiIndex == 11 )// Signal -> Anlage sperren
- 1b4:	54 96       	adiw	r26, 0x14	; 20
- 1b6:	8c 91       	ld	r24, X
- 1b8:	8b 30       	cpi	r24, 0x0B	; 11
- 1ba:	c1 f4       	brne	.+48     	; 0x1ec <main+0xde>
-				{
-					SIGNAL_SPERREN_PORT |= (1<<SIGNAL_SPERREN_BP);
- 1bc:	2b 9a       	sbi	0x05, 3	; 5
- 1be:	bf ef       	ldi	r27, 0xFF	; 255
- 1c0:	e0 e7       	ldi	r30, 0x70	; 112
- 1c2:	f2 e0       	ldi	r31, 0x02	; 2
- 1c4:	b1 50       	subi	r27, 0x01	; 1
- 1c6:	e0 40       	sbci	r30, 0x00	; 0
- 1c8:	f0 40       	sbci	r31, 0x00	; 0
- 1ca:	e1 f7       	brne	.-8      	; 0x1c4 <main+0xb6>
- 1cc:	00 c0       	rjmp	.+0      	; 0x1ce <main+0xc0>
- 1ce:	00 00       	nop
+ 190:	8f ef       	ldi	r24, 0xFF	; 255
+ 192:	90 e7       	ldi	r25, 0x70	; 112
+ 194:	a2 e0       	ldi	r26, 0x02	; 2
+ 196:	81 50       	subi	r24, 0x01	; 1
+ 198:	90 40       	sbci	r25, 0x00	; 0
+ 19a:	a0 40       	sbci	r26, 0x00	; 0
+ 19c:	e1 f7       	brne	.-8      	; 0x196 <main+0x6e>
+ 19e:	00 c0       	rjmp	.+0      	; 0x1a0 <main+0x78>
+ 1a0:	00 00       	nop
 					_delay_ms(50);
 					SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
- 1d0:	2b 98       	cbi	0x05, 3	; 5
- 1d2:	2f ef       	ldi	r18, 0xFF	; 255
- 1d4:	30 e7       	ldi	r19, 0x70	; 112
- 1d6:	82 e0       	ldi	r24, 0x02	; 2
- 1d8:	21 50       	subi	r18, 0x01	; 1
- 1da:	30 40       	sbci	r19, 0x00	; 0
- 1dc:	80 40       	sbci	r24, 0x00	; 0
- 1de:	e1 f7       	brne	.-8      	; 0x1d8 <main+0xca>
- 1e0:	00 c0       	rjmp	.+0      	; 0x1e2 <main+0xd4>
- 1e2:	00 00       	nop
+ 1a2:	2b 98       	cbi	0x05, 3	; 5
+ 1a4:	bf ef       	ldi	r27, 0xFF	; 255
+ 1a6:	20 e7       	ldi	r18, 0x70	; 112
+ 1a8:	82 e0       	ldi	r24, 0x02	; 2
+ 1aa:	b1 50       	subi	r27, 0x01	; 1
+ 1ac:	20 40       	sbci	r18, 0x00	; 0
+ 1ae:	80 40       	sbci	r24, 0x00	; 0
+ 1b0:	e1 f7       	brne	.-8      	; 0x1aa <main+0x82>
+ 1b2:	00 c0       	rjmp	.+0      	; 0x1b4 <main+0x8c>
+ 1b4:	00 00       	nop
 					_delay_ms(50);
 					Signal.uiIndex = 0;
- 1e4:	d8 01       	movw	r26, r16
- 1e6:	54 96       	adiw	r26, 0x14	; 20
- 1e8:	1c 92       	st	X, r1
- 1ea:	59 c0       	rjmp	.+178    	; 0x29e <main+0x190>
+ 1b6:	18 82       	st	Y, r1
+ 1b8:	c9 cf       	rjmp	.-110    	; 0x14c <main+0x24>
 				} else if	( Signal.uiIndex == 14 )// Signal -> Annahme
- 1ec:	f8 01       	movw	r30, r16
- 1ee:	84 89       	ldd	r24, Z+20	; 0x14
- 1f0:	8e 30       	cpi	r24, 0x0E	; 14
- 1f2:	b9 f4       	brne	.+46     	; 0x222 <main+0x114>
+ 1ba:	88 81       	ld	r24, Y
+ 1bc:	8e 30       	cpi	r24, 0x0E	; 14
+ 1be:	b1 f4       	brne	.+44     	; 0x1ec <main+0xc4>
 				{
 					SIGNAL_ANNAHME_PORT |= (1<<SIGNAL_ANNAHME_BP);
- 1f4:	2c 9a       	sbi	0x05, 4	; 5
- 1f6:	ff ef       	ldi	r31, 0xFF	; 255
- 1f8:	20 e7       	ldi	r18, 0x70	; 112
- 1fa:	32 e0       	ldi	r19, 0x02	; 2
- 1fc:	f1 50       	subi	r31, 0x01	; 1
- 1fe:	20 40       	sbci	r18, 0x00	; 0
- 200:	30 40       	sbci	r19, 0x00	; 0
- 202:	e1 f7       	brne	.-8      	; 0x1fc <main+0xee>
- 204:	00 c0       	rjmp	.+0      	; 0x206 <main+0xf8>
- 206:	00 00       	nop
+ 1c0:	2c 9a       	sbi	0x05, 4	; 5
+ 1c2:	9f ef       	ldi	r25, 0xFF	; 255
+ 1c4:	a0 e7       	ldi	r26, 0x70	; 112
+ 1c6:	b2 e0       	ldi	r27, 0x02	; 2
+ 1c8:	91 50       	subi	r25, 0x01	; 1
+ 1ca:	a0 40       	sbci	r26, 0x00	; 0
+ 1cc:	b0 40       	sbci	r27, 0x00	; 0
+ 1ce:	e1 f7       	brne	.-8      	; 0x1c8 <main+0xa0>
+ 1d0:	00 c0       	rjmp	.+0      	; 0x1d2 <main+0xaa>
+ 1d2:	00 00       	nop
 					_delay_ms(50);
 					SIGNAL_ANNAHME_PORT &= ~(1<<SIGNAL_ANNAHME_BP);
- 208:	2c 98       	cbi	0x05, 4	; 5
+ 1d4:	2c 98       	cbi	0x05, 4	; 5
+ 1d6:	2f ef       	ldi	r18, 0xFF	; 255
+ 1d8:	80 e7       	ldi	r24, 0x70	; 112
+ 1da:	92 e0       	ldi	r25, 0x02	; 2
+ 1dc:	21 50       	subi	r18, 0x01	; 1
+ 1de:	80 40       	sbci	r24, 0x00	; 0
+ 1e0:	90 40       	sbci	r25, 0x00	; 0
+ 1e2:	e1 f7       	brne	.-8      	; 0x1dc <main+0xb4>
+ 1e4:	00 c0       	rjmp	.+0      	; 0x1e6 <main+0xbe>
+ 1e6:	00 00       	nop
+					_delay_ms(50);
+					Signal.uiIndex = 0;
+ 1e8:	18 82       	st	Y, r1
+ 1ea:	b0 cf       	rjmp	.-160    	; 0x14c <main+0x24>
+				} else if	( Signal.uiIndex >= 15 )// Signal -> Klingel
+ 1ec:	88 81       	ld	r24, Y
+ 1ee:	8f 30       	cpi	r24, 0x0F	; 15
+ 1f0:	08 f4       	brcc	.+2      	; 0x1f4 <main+0xcc>
+ 1f2:	ac cf       	rjmp	.-168    	; 0x14c <main+0x24>
+				{
+					SIGNAL_KLINGEL_PORT |= (1<<SIGNAL_KLINGEL_BP);
+ 1f4:	2a 9a       	sbi	0x05, 2	; 5
+ 1f6:	af ef       	ldi	r26, 0xFF	; 255
+ 1f8:	b0 e7       	ldi	r27, 0x70	; 112
+ 1fa:	22 e0       	ldi	r18, 0x02	; 2
+ 1fc:	a1 50       	subi	r26, 0x01	; 1
+ 1fe:	b0 40       	sbci	r27, 0x00	; 0
+ 200:	20 40       	sbci	r18, 0x00	; 0
+ 202:	e1 f7       	brne	.-8      	; 0x1fc <main+0xd4>
+ 204:	00 c0       	rjmp	.+0      	; 0x206 <main+0xde>
+ 206:	00 00       	nop
+					_delay_ms(50);
+					SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
+ 208:	2a 98       	cbi	0x05, 2	; 5
  20a:	8f ef       	ldi	r24, 0xFF	; 255
  20c:	90 e7       	ldi	r25, 0x70	; 112
  20e:	a2 e0       	ldi	r26, 0x02	; 2
  210:	81 50       	subi	r24, 0x01	; 1
  212:	90 40       	sbci	r25, 0x00	; 0
  214:	a0 40       	sbci	r26, 0x00	; 0
- 216:	e1 f7       	brne	.-8      	; 0x210 <main+0x102>
- 218:	00 c0       	rjmp	.+0      	; 0x21a <main+0x10c>
+ 216:	e1 f7       	brne	.-8      	; 0x210 <main+0xe8>
+ 218:	00 c0       	rjmp	.+0      	; 0x21a <main+0xf2>
  21a:	00 00       	nop
 					_delay_ms(50);
 					Signal.uiIndex = 0;
- 21c:	f8 01       	movw	r30, r16
- 21e:	14 8a       	std	Z+20, r1	; 0x14
- 220:	3e c0       	rjmp	.+124    	; 0x29e <main+0x190>
-				} else if	( Signal.uiIndex >= 15 )// Signal -> Klingel
- 222:	84 89       	ldd	r24, Z+20	; 0x14
- 224:	8f 30       	cpi	r24, 0x0F	; 15
- 226:	c0 f0       	brcs	.+48     	; 0x258 <main+0x14a>
-				{
-					SIGNAL_KLINGEL_PORT |= (1<<SIGNAL_KLINGEL_BP);
- 228:	2a 9a       	sbi	0x05, 2	; 5
- 22a:	bf ef       	ldi	r27, 0xFF	; 255
- 22c:	e0 e7       	ldi	r30, 0x70	; 112
- 22e:	f2 e0       	ldi	r31, 0x02	; 2
- 230:	b1 50       	subi	r27, 0x01	; 1
- 232:	e0 40       	sbci	r30, 0x00	; 0
- 234:	f0 40       	sbci	r31, 0x00	; 0
- 236:	e1 f7       	brne	.-8      	; 0x230 <main+0x122>
- 238:	00 c0       	rjmp	.+0      	; 0x23a <main+0x12c>
- 23a:	00 00       	nop
-					_delay_ms(50);
-					SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
- 23c:	2a 98       	cbi	0x05, 2	; 5
- 23e:	2f ef       	ldi	r18, 0xFF	; 255
- 240:	30 e7       	ldi	r19, 0x70	; 112
- 242:	82 e0       	ldi	r24, 0x02	; 2
- 244:	21 50       	subi	r18, 0x01	; 1
- 246:	30 40       	sbci	r19, 0x00	; 0
- 248:	80 40       	sbci	r24, 0x00	; 0
- 24a:	e1 f7       	brne	.-8      	; 0x244 <main+0x136>
- 24c:	00 c0       	rjmp	.+0      	; 0x24e <main+0x140>
- 24e:	00 00       	nop
-					_delay_ms(50);
-					Signal.uiIndex = 0;
- 250:	d8 01       	movw	r26, r16
- 252:	54 96       	adiw	r26, 0x14	; 20
- 254:	1c 92       	st	X, r1
- 256:	23 c0       	rjmp	.+70     	; 0x29e <main+0x190>
-				}
-				else
-				{
-					Signal.uiIndex = 0;
- 258:	f8 01       	movw	r30, r16
- 25a:	14 8a       	std	Z+20, r1	; 0x14
- 25c:	83 e0       	ldi	r24, 0x03	; 3
-					for ( uint8_t i = 0 ; i < 3 ; i++ )
-					{
-						DEBUG_LED_PORT &= ~(1<<DEBUG_LED_BP);
- 25e:	2d 98       	cbi	0x05, 5	; 5
-						SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
- 260:	2b 98       	cbi	0x05, 3	; 5
-						SIGNAL_ANNAHME_PORT &= ~(1<<SIGNAL_ANNAHME_BP);
- 262:	2c 98       	cbi	0x05, 4	; 5
-						SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
- 264:	2a 98       	cbi	0x05, 2	; 5
- 266:	ff ef       	ldi	r31, 0xFF	; 255
- 268:	21 ee       	ldi	r18, 0xE1	; 225
- 26a:	34 e0       	ldi	r19, 0x04	; 4
- 26c:	f1 50       	subi	r31, 0x01	; 1
- 26e:	20 40       	sbci	r18, 0x00	; 0
- 270:	30 40       	sbci	r19, 0x00	; 0
- 272:	e1 f7       	brne	.-8      	; 0x26c <main+0x15e>
- 274:	00 c0       	rjmp	.+0      	; 0x276 <main+0x168>
- 276:	00 00       	nop
-						_delay_ms(100);
-						DEBUG_LED_PORT |= (1<<DEBUG_LED_BP);
- 278:	2d 9a       	sbi	0x05, 5	; 5
-						SIGNAL_SPERREN_PORT |= (1<<SIGNAL_SPERREN_BP);
- 27a:	2b 9a       	sbi	0x05, 3	; 5
-						SIGNAL_ANNAHME_PORT |= (1<<SIGNAL_ANNAHME_BP);
- 27c:	2c 9a       	sbi	0x05, 4	; 5
-						SIGNAL_KLINGEL_PORT |= (1<<SIGNAL_KLINGEL_BP);					
- 27e:	2a 9a       	sbi	0x05, 2	; 5
- 280:	9f e7       	ldi	r25, 0x7F	; 127
- 282:	a8 e3       	ldi	r26, 0x38	; 56
- 284:	b1 e0       	ldi	r27, 0x01	; 1
- 286:	91 50       	subi	r25, 0x01	; 1
- 288:	a0 40       	sbci	r26, 0x00	; 0
- 28a:	b0 40       	sbci	r27, 0x00	; 0
- 28c:	e1 f7       	brne	.-8      	; 0x286 <main+0x178>
- 28e:	00 c0       	rjmp	.+0      	; 0x290 <main+0x182>
- 290:	00 00       	nop
- 292:	81 50       	subi	r24, 0x01	; 1
-					Signal.uiIndex = 0;
-				}
-				else
-				{
-					Signal.uiIndex = 0;
-					for ( uint8_t i = 0 ; i < 3 ; i++ )
- 294:	21 f7       	brne	.-56     	; 0x25e <main+0x150>
-						SIGNAL_SPERREN_PORT |= (1<<SIGNAL_SPERREN_BP);
-						SIGNAL_ANNAHME_PORT |= (1<<SIGNAL_ANNAHME_BP);
-						SIGNAL_KLINGEL_PORT |= (1<<SIGNAL_KLINGEL_BP);					
-						_delay_ms(25);
-					}
-						DEBUG_LED_PORT &= ~(1<<DEBUG_LED_BP);
- 296:	2d 98       	cbi	0x05, 5	; 5
-						SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
- 298:	2b 98       	cbi	0x05, 3	; 5
-						SIGNAL_ANNAHME_PORT &= ~(1<<SIGNAL_ANNAHME_BP);
- 29a:	2c 98       	cbi	0x05, 4	; 5
-						SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
- 29c:	2a 98       	cbi	0x05, 2	; 5
-				}
-				DEBUG_LED_PORT &= ~(1<<DEBUG_LED_BP);
- 29e:	2d 98       	cbi	0x05, 5	; 5
- 2a0:	62 cf       	rjmp	.-316    	; 0x166 <main+0x58>
-			}
-		}else
-		{
-			static uint32_t ulStandbyBlink = 0;
-			if ( !Signal.b3 ) // Signal Timeout bzw. lange kein Signal erkannt ( Signal.b3 == 1 )
- 2a2:	88 81       	ld	r24, Y
- 2a4:	80 fd       	sbrc	r24, 0
- 2a6:	22 c0       	rjmp	.+68     	; 0x2ec <main+0x1de>
-			{
-				if ( Signal.ulTimeout++ > 40e5 )
- 2a8:	f8 01       	movw	r30, r16
- 2aa:	61 8d       	ldd	r22, Z+25	; 0x19
- 2ac:	72 8d       	ldd	r23, Z+26	; 0x1a
- 2ae:	83 8d       	ldd	r24, Z+27	; 0x1b
- 2b0:	94 8d       	ldd	r25, Z+28	; 0x1c
- 2b2:	6b 01       	movw	r12, r22
- 2b4:	7c 01       	movw	r14, r24
- 2b6:	ff ef       	ldi	r31, 0xFF	; 255
- 2b8:	cf 1a       	sub	r12, r31
- 2ba:	df 0a       	sbc	r13, r31
- 2bc:	ef 0a       	sbc	r14, r31
- 2be:	ff 0a       	sbc	r15, r31
- 2c0:	d8 01       	movw	r26, r16
- 2c2:	59 96       	adiw	r26, 0x19	; 25
- 2c4:	cd 92       	st	X+, r12
- 2c6:	dd 92       	st	X+, r13
- 2c8:	ed 92       	st	X+, r14
- 2ca:	fc 92       	st	X, r15
- 2cc:	5c 97       	sbiw	r26, 0x1c	; 28
- 2ce:	0e 94 b4 01 	call	0x368	; 0x368 <__floatunsisf>
- 2d2:	20 e0       	ldi	r18, 0x00	; 0
- 2d4:	34 e2       	ldi	r19, 0x24	; 36
- 2d6:	44 e7       	ldi	r20, 0x74	; 116
- 2d8:	5a e4       	ldi	r21, 0x4A	; 74
- 2da:	0e 94 15 02 	call	0x42a	; 0x42a <__gesf2>
- 2de:	18 16       	cp	r1, r24
- 2e0:	0c f0       	brlt	.+2      	; 0x2e4 <main+0x1d6>
- 2e2:	41 cf       	rjmp	.-382    	; 0x166 <main+0x58>
-				{
-					Signal.b3 = 1; // Timeout bzw. Standby		
- 2e4:	88 81       	ld	r24, Y
- 2e6:	81 60       	ori	r24, 0x01	; 1
- 2e8:	88 83       	st	Y, r24
- 2ea:	3d cf       	rjmp	.-390    	; 0x166 <main+0x58>
-				}	
-			}else
-			{
-				if ( ulStandbyBlink < 20e5 )
- 2ec:	60 91 06 01 	lds	r22, 0x0106	; 0x800106 <__data_end>
- 2f0:	70 91 07 01 	lds	r23, 0x0107	; 0x800107 <__data_end+0x1>
- 2f4:	80 91 08 01 	lds	r24, 0x0108	; 0x800108 <__data_end+0x2>
- 2f8:	90 91 09 01 	lds	r25, 0x0109	; 0x800109 <__data_end+0x3>
- 2fc:	0e 94 b4 01 	call	0x368	; 0x368 <__floatunsisf>
- 300:	6b 01       	movw	r12, r22
- 302:	7c 01       	movw	r14, r24
- 304:	20 e0       	ldi	r18, 0x00	; 0
- 306:	34 e2       	ldi	r19, 0x24	; 36
- 308:	44 ef       	ldi	r20, 0xF4	; 244
- 30a:	59 e4       	ldi	r21, 0x49	; 73
- 30c:	0e 94 af 01 	call	0x35e	; 0x35e <__cmpsf2>
- 310:	88 23       	and	r24, r24
- 312:	24 f4       	brge	.+8      	; 0x31c <main+0x20e>
-				{
-					SIGNAL_SPERREN_PORT |= (1<<SIGNAL_SPERREN_BP);
- 314:	2b 9a       	sbi	0x05, 3	; 5
-					SIGNAL_ANNAHME_PORT |= (1<<SIGNAL_ANNAHME_BP);
- 316:	2c 9a       	sbi	0x05, 4	; 5
-					SIGNAL_KLINGEL_PORT |= (1<<SIGNAL_KLINGEL_BP);
- 318:	2a 9a       	sbi	0x05, 2	; 5
- 31a:	25 cf       	rjmp	.-438    	; 0x166 <main+0x58>
-				}else if ( ulStandbyBlink > 20e5 && ulStandbyBlink < 40e5 )
- 31c:	20 e0       	ldi	r18, 0x00	; 0
- 31e:	34 e2       	ldi	r19, 0x24	; 36
- 320:	44 ef       	ldi	r20, 0xF4	; 244
- 322:	59 e4       	ldi	r21, 0x49	; 73
- 324:	c7 01       	movw	r24, r14
- 326:	b6 01       	movw	r22, r12
- 328:	0e 94 15 02 	call	0x42a	; 0x42a <__gesf2>
- 32c:	18 16       	cp	r1, r24
- 32e:	74 f4       	brge	.+28     	; 0x34c <main+0x23e>
- 330:	20 e0       	ldi	r18, 0x00	; 0
- 332:	34 e2       	ldi	r19, 0x24	; 36
- 334:	44 e7       	ldi	r20, 0x74	; 116
- 336:	5a e4       	ldi	r21, 0x4A	; 74
- 338:	c7 01       	movw	r24, r14
- 33a:	b6 01       	movw	r22, r12
- 33c:	0e 94 af 01 	call	0x35e	; 0x35e <__cmpsf2>
- 340:	88 23       	and	r24, r24
- 342:	24 f4       	brge	.+8      	; 0x34c <main+0x23e>
-				{
-					SIGNAL_SPERREN_PORT &= ~(1<<SIGNAL_SPERREN_BP);
- 344:	2b 98       	cbi	0x05, 3	; 5
-					SIGNAL_ANNAHME_PORT &= ~(1<<SIGNAL_ANNAHME_BP);
- 346:	2c 98       	cbi	0x05, 4	; 5
-					SIGNAL_KLINGEL_PORT &= ~(1<<SIGNAL_KLINGEL_BP);
- 348:	2a 98       	cbi	0x05, 2	; 5
- 34a:	0d cf       	rjmp	.-486    	; 0x166 <main+0x58>
-				}else
-				{
-					ulStandbyBlink = 0;
- 34c:	10 92 06 01 	sts	0x0106, r1	; 0x800106 <__data_end>
- 350:	10 92 07 01 	sts	0x0107, r1	; 0x800107 <__data_end+0x1>
- 354:	10 92 08 01 	sts	0x0108, r1	; 0x800108 <__data_end+0x2>
- 358:	10 92 09 01 	sts	0x0109, r1	; 0x800109 <__data_end+0x3>
- 35c:	04 cf       	rjmp	.-504    	; 0x166 <main+0x58>
+ 21c:	18 82       	st	Y, r1
+ 21e:	96 cf       	rjmp	.-212    	; 0x14c <main+0x24>
 
-0000035e <__cmpsf2>:
- 35e:	0e 94 f1 01 	call	0x3e2	; 0x3e2 <__fp_cmp>
- 362:	08 f4       	brcc	.+2      	; 0x366 <__cmpsf2+0x8>
- 364:	81 e0       	ldi	r24, 0x01	; 1
- 366:	08 95       	ret
+00000220 <_exit>:
+ 220:	f8 94       	cli
 
-00000368 <__floatunsisf>:
- 368:	e8 94       	clt
- 36a:	09 c0       	rjmp	.+18     	; 0x37e <__floatsisf+0x12>
-
-0000036c <__floatsisf>:
- 36c:	97 fb       	bst	r25, 7
- 36e:	3e f4       	brtc	.+14     	; 0x37e <__floatsisf+0x12>
- 370:	90 95       	com	r25
- 372:	80 95       	com	r24
- 374:	70 95       	com	r23
- 376:	61 95       	neg	r22
- 378:	7f 4f       	sbci	r23, 0xFF	; 255
- 37a:	8f 4f       	sbci	r24, 0xFF	; 255
- 37c:	9f 4f       	sbci	r25, 0xFF	; 255
- 37e:	99 23       	and	r25, r25
- 380:	a9 f0       	breq	.+42     	; 0x3ac <__floatsisf+0x40>
- 382:	f9 2f       	mov	r31, r25
- 384:	96 e9       	ldi	r25, 0x96	; 150
- 386:	bb 27       	eor	r27, r27
- 388:	93 95       	inc	r25
- 38a:	f6 95       	lsr	r31
- 38c:	87 95       	ror	r24
- 38e:	77 95       	ror	r23
- 390:	67 95       	ror	r22
- 392:	b7 95       	ror	r27
- 394:	f1 11       	cpse	r31, r1
- 396:	f8 cf       	rjmp	.-16     	; 0x388 <__floatsisf+0x1c>
- 398:	fa f4       	brpl	.+62     	; 0x3d8 <__floatsisf+0x6c>
- 39a:	bb 0f       	add	r27, r27
- 39c:	11 f4       	brne	.+4      	; 0x3a2 <__floatsisf+0x36>
- 39e:	60 ff       	sbrs	r22, 0
- 3a0:	1b c0       	rjmp	.+54     	; 0x3d8 <__floatsisf+0x6c>
- 3a2:	6f 5f       	subi	r22, 0xFF	; 255
- 3a4:	7f 4f       	sbci	r23, 0xFF	; 255
- 3a6:	8f 4f       	sbci	r24, 0xFF	; 255
- 3a8:	9f 4f       	sbci	r25, 0xFF	; 255
- 3aa:	16 c0       	rjmp	.+44     	; 0x3d8 <__floatsisf+0x6c>
- 3ac:	88 23       	and	r24, r24
- 3ae:	11 f0       	breq	.+4      	; 0x3b4 <__floatsisf+0x48>
- 3b0:	96 e9       	ldi	r25, 0x96	; 150
- 3b2:	11 c0       	rjmp	.+34     	; 0x3d6 <__floatsisf+0x6a>
- 3b4:	77 23       	and	r23, r23
- 3b6:	21 f0       	breq	.+8      	; 0x3c0 <__floatsisf+0x54>
- 3b8:	9e e8       	ldi	r25, 0x8E	; 142
- 3ba:	87 2f       	mov	r24, r23
- 3bc:	76 2f       	mov	r23, r22
- 3be:	05 c0       	rjmp	.+10     	; 0x3ca <__floatsisf+0x5e>
- 3c0:	66 23       	and	r22, r22
- 3c2:	71 f0       	breq	.+28     	; 0x3e0 <__floatsisf+0x74>
- 3c4:	96 e8       	ldi	r25, 0x86	; 134
- 3c6:	86 2f       	mov	r24, r22
- 3c8:	70 e0       	ldi	r23, 0x00	; 0
- 3ca:	60 e0       	ldi	r22, 0x00	; 0
- 3cc:	2a f0       	brmi	.+10     	; 0x3d8 <__floatsisf+0x6c>
- 3ce:	9a 95       	dec	r25
- 3d0:	66 0f       	add	r22, r22
- 3d2:	77 1f       	adc	r23, r23
- 3d4:	88 1f       	adc	r24, r24
- 3d6:	da f7       	brpl	.-10     	; 0x3ce <__floatsisf+0x62>
- 3d8:	88 0f       	add	r24, r24
- 3da:	96 95       	lsr	r25
- 3dc:	87 95       	ror	r24
- 3de:	97 f9       	bld	r25, 7
- 3e0:	08 95       	ret
-
-000003e2 <__fp_cmp>:
- 3e2:	99 0f       	add	r25, r25
- 3e4:	00 08       	sbc	r0, r0
- 3e6:	55 0f       	add	r21, r21
- 3e8:	aa 0b       	sbc	r26, r26
- 3ea:	e0 e8       	ldi	r30, 0x80	; 128
- 3ec:	fe ef       	ldi	r31, 0xFE	; 254
- 3ee:	16 16       	cp	r1, r22
- 3f0:	17 06       	cpc	r1, r23
- 3f2:	e8 07       	cpc	r30, r24
- 3f4:	f9 07       	cpc	r31, r25
- 3f6:	c0 f0       	brcs	.+48     	; 0x428 <__LOCK_REGION_LENGTH__+0x28>
- 3f8:	12 16       	cp	r1, r18
- 3fa:	13 06       	cpc	r1, r19
- 3fc:	e4 07       	cpc	r30, r20
- 3fe:	f5 07       	cpc	r31, r21
- 400:	98 f0       	brcs	.+38     	; 0x428 <__LOCK_REGION_LENGTH__+0x28>
- 402:	62 1b       	sub	r22, r18
- 404:	73 0b       	sbc	r23, r19
- 406:	84 0b       	sbc	r24, r20
- 408:	95 0b       	sbc	r25, r21
- 40a:	39 f4       	brne	.+14     	; 0x41a <__LOCK_REGION_LENGTH__+0x1a>
- 40c:	0a 26       	eor	r0, r26
- 40e:	61 f0       	breq	.+24     	; 0x428 <__LOCK_REGION_LENGTH__+0x28>
- 410:	23 2b       	or	r18, r19
- 412:	24 2b       	or	r18, r20
- 414:	25 2b       	or	r18, r21
- 416:	21 f4       	brne	.+8      	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 418:	08 95       	ret
- 41a:	0a 26       	eor	r0, r26
- 41c:	09 f4       	brne	.+2      	; 0x420 <__LOCK_REGION_LENGTH__+0x20>
- 41e:	a1 40       	sbci	r26, 0x01	; 1
- 420:	a6 95       	lsr	r26
- 422:	8f ef       	ldi	r24, 0xFF	; 255
- 424:	81 1d       	adc	r24, r1
- 426:	81 1d       	adc	r24, r1
- 428:	08 95       	ret
-
-0000042a <__gesf2>:
- 42a:	0e 94 f1 01 	call	0x3e2	; 0x3e2 <__fp_cmp>
- 42e:	08 f4       	brcc	.+2      	; 0x432 <__gesf2+0x8>
- 430:	8f ef       	ldi	r24, 0xFF	; 255
- 432:	08 95       	ret
-
-00000434 <_exit>:
- 434:	f8 94       	cli
-
-00000436 <__stop_program>:
- 436:	ff cf       	rjmp	.-2      	; 0x436 <__stop_program>
+00000222 <__stop_program>:
+ 222:	ff cf       	rjmp	.-2      	; 0x222 <__stop_program>
