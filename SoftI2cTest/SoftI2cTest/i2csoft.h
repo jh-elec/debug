@@ -21,18 +21,30 @@
 #include <util/delay.h>
 
 #ifdef __AVR__
+
 #define	__PORT_DDR__( _p )		(*( (_p-1) ))	
 #define __PORT_PIN__( _p )		(*( (_p-2) ))
+
+#define _I2C_PORT					PORTC
+#define _I2C_SDA_BP					1
+#define _I2C_SCL_BP					0
+
+#define _I2C_PORT_SDA_HIGH			__PORT_DDR__( &_I2C_PORT ) &= ~(1<<_I2C_SDA_BP)
+#define _I2C_PORT_SDA_LOW			__PORT_DDR__( &_I2C_PORT ) |=  (1<<_I2C_SDA_BP)
+
+#define _I2C_PORT_SCL_HIGH			__PORT_DDR__( &_I2C_PORT ) &= ~(1<<_I2C_SCL_BP)
+#define _I2C_PORT_SCL_LOW			__PORT_DDR__( &_I2C_PORT ) |=  (1<<_I2C_SCL_BP)
+
+#define Q_DEL _delay_loop_2(1)
+#define H_DEL _delay_loop_2(1)
+
 #else
-#error Library not Supported for our Device
+
+#error Library not supported for our Device \
+please Contact.: "J.Homann@jh-elec.de"
 #endif 
 
-#define _I2C_PORT		PORTC
-#define _I2C_SDA_BP		0
-#define _I2C_SCL_BP		1
 
-#define Q_DEL _delay_loop_2(3)
-#define H_DEL _delay_loop_2(5)
 
 
 void I2cSoftInit( void );

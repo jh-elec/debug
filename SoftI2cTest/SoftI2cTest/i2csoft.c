@@ -10,6 +10,8 @@
 *
 */
 
+#define F_CPU	16e6
+
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -18,29 +20,30 @@
 
 void I2cSoftInit( void ) 
 {	
-	_I2C_PORT &= ~( ( 1<<_I2C_SCL_BP ) | ( 1<<_I2C_SDA_BP ) );
-	__PORT_DDR__( _I2C_PORT ) |= (( 1<<_I2C_SCL_BP ) | ( 1<<_I2C_SDA_BP ));	
+	_I2C_PORT &= ( ( 1<<_I2C_SCL_BP ) | ( 1<<_I2C_SDA_BP ) );
+	
+	_I2C_PORT_SDA_HIGH;
+	_I2C_PORT_SCL_HIGH;
 }
 
 void I2cSoftStart( void )
 {
-	__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SCL_BP ); // High
+	_I2C_PORT_SCL_HIGH;
 	H_DEL;
 	
-	__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SDA_BP ); // Low
+	_I2C_PORT_SDA_LOW;
 	H_DEL;
 }
 
 void I2cSoftStop( void )
 {
-	
-	__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SDA_BP ); // Low
+	_I2C_PORT_SDA_LOW;
 	H_DEL;
 	
-	__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SCL_BP ); // High
+	_I2C_PORT_SCL_HIGH;
 	Q_DEL;
 	
-	__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SDA_BP ); // Low
+	_I2C_PORT_SDA_HIGH;
 	H_DEL;
 }
 
@@ -51,46 +54,44 @@ uint8_t I2cSoftWrite( uint8_t Data )
 	
 	for ( ui = 0 ; ui < 8 ; ui++ )
 	{
-		__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SCL_BP ); // Low
-		
+		_I2C_PORT_SCL_LOW;
 		Q_DEL;
+		
 		if ( Data & 0x80 )
 		{
-			__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SDA_BP ); // High
+			_I2C_PORT_SDA_HIGH;
 		}else
 		{
-			__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SDA_BP ); // Low
+			_I2C_PORT_SDA_LOW;
 		}
+		
+		H_DEL;
+		_I2C_PORT_SCL_HIGH;
 		H_DEL;
 		
-		__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SCL_BP ); // High
-		H_DEL;
-		
- 		while ( ( __PORT_PIN__( _I2C_PORT ) & ( 1<<_I2C_SCL_BP ) ) == 0 ); // Warten bis "Scl" Low..
+ 		while ( ( __PORT_PIN__( &_I2C_PORT ) & ( 1<<_I2C_SCL_BP ) ) == 0 ); // Warten bis "Scl" Low..
 		
 		Data <<= 1;
 	}
 
-	//The 9th clock (ACK Phase)	
-	__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SCL_BP ); // Low
+
+	_I2C_PORT_SCL_LOW; // Ack Bestätigung
 	Q_DEL;
 	
-	__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SDA_BP ); // High
+	_I2C_PORT_SDA_HIGH;
 	H_DEL;
 	
-	__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SCL_BP ); // High
+	_I2C_PORT_SCL_HIGH;
 	H_DEL;
 		
-
-	Acknowledge = !( __PORT_PIN__( _I2C_PORT ) & ( 1<<_I2C_SDA_BP ) );
+	Acknowledge = !( __PORT_PIN__( &_I2C_PORT ) & ( 1<<_I2C_SDA_BP ) );
 	
-	__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SCL_BP ); // Low
+	_I2C_PORT_SCL_LOW;
 	H_DEL;
 	
 	return Acknowledge;	
 }
 
- 
  uint8_t I2cSoftRead( uint8_t Acknowledge )
  {
 	 uint8_t uiData = 0;
@@ -98,35 +99,35 @@ uint8_t I2cSoftWrite( uint8_t Data )
 	 
 	 for ( ui = 0 ; ui < 8 ; ui++ )
 	 {
-		__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SCL_BP ); // Low
+		_I2C_PORT_SCL_LOW;
 		H_DEL;
-		__PORT_DDR__( _I2C_PORT ) |=  ( 1<<_I2C_SCL_BP ); // High
+		_I2C_PORT_SCL_HIGH;
 		H_DEL;	
 
-		while( ( __PORT_PIN__( _I2C_PORT ) & ( 1<<_I2C_SCL_BP ) ) == 0 );
+		while( ( __PORT_PIN__( &_I2C_PORT ) & ( 1<<_I2C_SCL_BP ) ) == 0 );
 		
-		if( __PORT_PIN__( _I2C_PORT ) & ( 1<<_I2C_SDA_BP ) )
+		if( __PORT_PIN__( &_I2C_PORT ) & ( 1<<_I2C_SDA_BP ) )
 		{
 			uiData |= ( 0x80 >> ui );
 		}
 	 }
 
-	__PORT_DDR__ ( _I2C_PORT ) &= ~( 1<<_I2C_SCL_BP ); //Soft_I2C_Put_Ack
+	_I2C_PORT_SCL_LOW;
 	Q_DEL;
 
 	if ( Acknowledge )
 	{
-		__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SDA_BP ); // Low
+		_I2C_PORT_SDA_LOW;
 	}else
 	{
-		__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SDA_BP ); // High
+		_I2C_PORT_SDA_HIGH;
 	}
 	H_DEL;
 	
-	__PORT_DDR__( _I2C_PORT ) |= ( 1<<_I2C_SCL_BP ); // High
+	_I2C_PORT_SCL_HIGH;
 	H_DEL;
 	
-	__PORT_DDR__( _I2C_PORT ) &= ~( 1<<_I2C_SCL_BP ); // Low
+	_I2C_PORT_SCL_LOW;
 	H_DEL;
 			
 	return uiData;

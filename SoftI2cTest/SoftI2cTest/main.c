@@ -10,17 +10,15 @@
 
 int main(void)
 {
-
-	
-	//uint8_t Commando[] = { 13 , 0x83 }; // Frequenz Modus + 1Hz
-	
+	I2cSoftInit();
+		
     while (1) 
-    {	
-// 		I2cSoftStart( &SoftI2c );
-// 		I2cSoftWrite( &SoftI2c , 0xA2 ); // Slave Adresse
-// 		I2cSoftWrite( &SoftI2c , 13 );
-// 		I2cSoftWrite( &SoftI2c , 0x83 );
-// 		I2cSoftStop( &SoftI2c );
+    {
+ 		I2cSoftStart( );
+ 		I2cSoftWrite( 0xA2 ); // Slave Adresse
+		I2cSoftWrite( 13 );
+ 		I2cSoftWrite( 0x83 );
+ 		I2cSoftStop( );
     }
 }
 
