@@ -3,31 +3,31 @@ SoftI2cTest.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000172  00000000  00000000  00000074  2**1
+  0 .text         000003d8  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  000001e6  2**0
+  1 .data         00000000  00800060  00800060  0000044c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000004  00800060  00800060  000001e6  2**0
+  2 .bss          00000008  00800060  00800060  0000044c  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000001e6  2**0
+  3 .comment      00000030  00000000  00000000  0000044c  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000218  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000047c  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000060  00000000  00000000  00000254  2**0
+  5 .debug_aranges 00000060  00000000  00000000  000004b8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000a4f  00000000  00000000  000002b4  2**0
+  6 .debug_info   00000aee  00000000  00000000  00000518  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000006e7  00000000  00000000  00000d03  2**0
+  7 .debug_abbrev 000006d3  00000000  00000000  00001006  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000056d  00000000  00000000  000013ea  2**0
+  8 .debug_line   00000584  00000000  00000000  000016d9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000dc  00000000  00000000  00001958  2**2
+  9 .debug_frame  000000dc  00000000  00000000  00001c60  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000390  00000000  00000000  00001a34  2**0
+ 10 .debug_str    00000379  00000000  00000000  00001d3c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000040e  00000000  00000000  00001dc4  2**0
+ 11 .debug_loc    00000404  00000000  00000000  000020b5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000088  00000000  00000000  000021d2  2**0
+ 12 .debug_ranges 00000088  00000000  00000000  000024b9  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -73,171 +73,561 @@ Disassembly of section .text:
   68:	1d 92       	st	X+, r1
 
 0000006a <.do_clear_bss_start>:
-  6a:	a4 36       	cpi	r26, 0x64	; 100
+  6a:	a8 36       	cpi	r26, 0x68	; 104
   6c:	b2 07       	cpc	r27, r18
   6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
-  70:	0e 94 71 00 	call	0xe2	; 0xe2 <main>
-  74:	0c 94 b7 00 	jmp	0x16e	; 0x16e <_exit>
+  70:	0e 94 bf 01 	call	0x37e	; 0x37e <main>
+  74:	0c 94 ea 01 	jmp	0x3d4	; 0x3d4 <_exit>
 
 00000078 <__bad_interrupt>:
   78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 0000007c <I2cSoftInit>:
 
+volatile static tI2c I2cModule;
 
-
-
-void I2cSoftInit( tI2c *Object ) 
+void I2cSoftInit( tI2c Object ) 
 {
-  7c:	fc 01       	movw	r30, r24
-	__PORT_DDR__( Object->Port ) |= ( 1 << Object->Scl ); // Scl als Ausgang konfigurieren
-  7e:	a0 81       	ld	r26, Z
-  80:	b1 81       	ldd	r27, Z+1	; 0x01
-  82:	4e 91       	ld	r20, -X
-  84:	21 e0       	ldi	r18, 0x01	; 1
-  86:	30 e0       	ldi	r19, 0x00	; 0
-  88:	c9 01       	movw	r24, r18
-  8a:	02 80       	ldd	r0, Z+2	; 0x02
-  8c:	02 c0       	rjmp	.+4      	; 0x92 <I2cSoftInit+0x16>
-  8e:	88 0f       	add	r24, r24
-  90:	99 1f       	adc	r25, r25
-  92:	0a 94       	dec	r0
-  94:	e2 f7       	brpl	.-8      	; 0x8e <I2cSoftInit+0x12>
-  96:	84 2b       	or	r24, r20
-  98:	8c 93       	st	X, r24
-	__PORT_DDR__( Object->Port ) |= ( 1 << Object->Sda ); // Sda als Ausgang konfigurieren
-  9a:	a0 81       	ld	r26, Z
-  9c:	b1 81       	ldd	r27, Z+1	; 0x01
-  9e:	4e 91       	ld	r20, -X
-  a0:	c9 01       	movw	r24, r18
-  a2:	03 80       	ldd	r0, Z+3	; 0x03
-  a4:	02 c0       	rjmp	.+4      	; 0xaa <I2cSoftInit+0x2e>
-  a6:	88 0f       	add	r24, r24
-  a8:	99 1f       	adc	r25, r25
-  aa:	0a 94       	dec	r0
-  ac:	e2 f7       	brpl	.-8      	; 0xa6 <I2cSoftInit+0x2a>
-  ae:	84 2b       	or	r24, r20
-  b0:	8c 93       	st	X, r24
+	I2cModule.Port = Object.Port;
+  7c:	26 2f       	mov	r18, r22
+  7e:	37 2f       	mov	r19, r23
+  80:	e0 e6       	ldi	r30, 0x60	; 96
+  82:	f0 e0       	ldi	r31, 0x00	; 0
+  84:	31 83       	std	Z+1, r19	; 0x01
+  86:	20 83       	st	Z, r18
+	I2cModule.Scl = Object.Scl;
+  88:	82 83       	std	Z+2, r24	; 0x02
+	I2cModule.Sda = Object.Sda;
+  8a:	93 83       	std	Z+3, r25	; 0x03
 	
-	*Object->Port |= ( 1 << Object->Scl ); // Default Pegel einstellen
-  b2:	a0 81       	ld	r26, Z
-  b4:	b1 81       	ldd	r27, Z+1	; 0x01
-  b6:	4c 91       	ld	r20, X
-  b8:	c9 01       	movw	r24, r18
-  ba:	02 80       	ldd	r0, Z+2	; 0x02
-  bc:	02 c0       	rjmp	.+4      	; 0xc2 <I2cSoftInit+0x46>
-  be:	88 0f       	add	r24, r24
-  c0:	99 1f       	adc	r25, r25
-  c2:	0a 94       	dec	r0
-  c4:	e2 f7       	brpl	.-8      	; 0xbe <I2cSoftInit+0x42>
-  c6:	84 2b       	or	r24, r20
-  c8:	8c 93       	st	X, r24
-	*Object->Port |= ( 1 << Object->Sda ); // ..	
-  ca:	a0 81       	ld	r26, Z
-  cc:	b1 81       	ldd	r27, Z+1	; 0x01
-  ce:	8c 91       	ld	r24, X
-  d0:	03 80       	ldd	r0, Z+3	; 0x03
-  d2:	02 c0       	rjmp	.+4      	; 0xd8 <I2cSoftInit+0x5c>
-  d4:	22 0f       	add	r18, r18
-  d6:	33 1f       	adc	r19, r19
-  d8:	0a 94       	dec	r0
-  da:	e2 f7       	brpl	.-8      	; 0xd4 <I2cSoftInit+0x58>
-  dc:	28 2b       	or	r18, r24
-  de:	2c 93       	st	X, r18
-  e0:	08 95       	ret
+	DDRC &= ~( ( 1<<I2cModule.Scl ) | ( 1<<I2cModule.Sda ) );
+  8c:	42 81       	ldd	r20, Z+2	; 0x02
+  8e:	33 81       	ldd	r19, Z+3	; 0x03
+  90:	24 b3       	in	r18, 0x14	; 20
+  92:	81 e0       	ldi	r24, 0x01	; 1
+  94:	90 e0       	ldi	r25, 0x00	; 0
+  96:	bc 01       	movw	r22, r24
+  98:	02 c0       	rjmp	.+4      	; 0x9e <I2cSoftInit+0x22>
+  9a:	66 0f       	add	r22, r22
+  9c:	77 1f       	adc	r23, r23
+  9e:	4a 95       	dec	r20
+  a0:	e2 f7       	brpl	.-8      	; 0x9a <I2cSoftInit+0x1e>
+  a2:	02 c0       	rjmp	.+4      	; 0xa8 <I2cSoftInit+0x2c>
+  a4:	88 0f       	add	r24, r24
+  a6:	99 1f       	adc	r25, r25
+  a8:	3a 95       	dec	r19
+  aa:	e2 f7       	brpl	.-8      	; 0xa4 <I2cSoftInit+0x28>
+  ac:	86 2b       	or	r24, r22
+  ae:	97 2b       	or	r25, r23
+  b0:	80 95       	com	r24
+  b2:	90 95       	com	r25
+  b4:	82 23       	and	r24, r18
+  b6:	84 bb       	out	0x14, r24	; 20
+  b8:	08 95       	ret
 
-000000e2 <main>:
+000000ba <I2cSoftStart>:
+//	*Object->Port |= ( 1 << Object->Scl ); // Default Pegel einstellen
+//	*Object->Port |= ( 1 << Object->Sda ); // ..	
+}
+
+void I2cSoftStart( tI2c *Object )
+{
+  ba:	fc 01       	movw	r30, r24
+	*Object->Port |= ( 1 << Object->Scl ); // High
+  bc:	a0 81       	ld	r26, Z
+  be:	b1 81       	ldd	r27, Z+1	; 0x01
+  c0:	4c 91       	ld	r20, X
+  c2:	21 e0       	ldi	r18, 0x01	; 1
+  c4:	30 e0       	ldi	r19, 0x00	; 0
+  c6:	c9 01       	movw	r24, r18
+  c8:	02 80       	ldd	r0, Z+2	; 0x02
+  ca:	02 c0       	rjmp	.+4      	; 0xd0 <I2cSoftStart+0x16>
+  cc:	88 0f       	add	r24, r24
+  ce:	99 1f       	adc	r25, r25
+  d0:	0a 94       	dec	r0
+  d2:	e2 f7       	brpl	.-8      	; 0xcc <I2cSoftStart+0x12>
+  d4:	84 2b       	or	r24, r20
+  d6:	8c 93       	st	X, r24
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+  d8:	45 e0       	ldi	r20, 0x05	; 5
+  da:	50 e0       	ldi	r21, 0x00	; 0
+  dc:	ca 01       	movw	r24, r20
+  de:	01 97       	sbiw	r24, 0x01	; 1
+  e0:	f1 f7       	brne	.-4      	; 0xde <I2cSoftStart+0x24>
+	H_DEL;
+	
+	*Object->Port &= ~( 1 << Object->Sda ); // Low
+  e2:	a0 81       	ld	r26, Z
+  e4:	b1 81       	ldd	r27, Z+1	; 0x01
+  e6:	8c 91       	ld	r24, X
+  e8:	03 80       	ldd	r0, Z+3	; 0x03
+  ea:	02 c0       	rjmp	.+4      	; 0xf0 <I2cSoftStart+0x36>
+  ec:	22 0f       	add	r18, r18
+  ee:	33 1f       	adc	r19, r19
+  f0:	0a 94       	dec	r0
+  f2:	e2 f7       	brpl	.-8      	; 0xec <I2cSoftStart+0x32>
+  f4:	20 95       	com	r18
+  f6:	28 23       	and	r18, r24
+  f8:	2c 93       	st	X, r18
+  fa:	ca 01       	movw	r24, r20
+  fc:	01 97       	sbiw	r24, 0x01	; 1
+  fe:	f1 f7       	brne	.-4      	; 0xfc <I2cSoftStart+0x42>
+ 100:	08 95       	ret
+
+00000102 <I2cSoftStop>:
+	H_DEL;
+}
+
+void I2cSoftStop( tI2c *Object )
+{
+ 102:	fc 01       	movw	r30, r24
+	*Object->Port &= ~( 1 << Object->Sda ); // Low
+ 104:	a0 81       	ld	r26, Z
+ 106:	b1 81       	ldd	r27, Z+1	; 0x01
+ 108:	9c 91       	ld	r25, X
+ 10a:	21 e0       	ldi	r18, 0x01	; 1
+ 10c:	30 e0       	ldi	r19, 0x00	; 0
+ 10e:	a9 01       	movw	r20, r18
+ 110:	03 80       	ldd	r0, Z+3	; 0x03
+ 112:	02 c0       	rjmp	.+4      	; 0x118 <I2cSoftStop+0x16>
+ 114:	44 0f       	add	r20, r20
+ 116:	55 1f       	adc	r21, r21
+ 118:	0a 94       	dec	r0
+ 11a:	e2 f7       	brpl	.-8      	; 0x114 <I2cSoftStop+0x12>
+ 11c:	84 2f       	mov	r24, r20
+ 11e:	80 95       	com	r24
+ 120:	89 23       	and	r24, r25
+ 122:	8c 93       	st	X, r24
+ 124:	85 e0       	ldi	r24, 0x05	; 5
+ 126:	90 e0       	ldi	r25, 0x00	; 0
+ 128:	dc 01       	movw	r26, r24
+ 12a:	11 97       	sbiw	r26, 0x01	; 1
+ 12c:	f1 f7       	brne	.-4      	; 0x12a <I2cSoftStop+0x28>
+	H_DEL;
+	
+	*Object->Port |= ( 1 << Object->Scl ); // High
+ 12e:	a0 81       	ld	r26, Z
+ 130:	b1 81       	ldd	r27, Z+1	; 0x01
+ 132:	6c 91       	ld	r22, X
+ 134:	a9 01       	movw	r20, r18
+ 136:	02 80       	ldd	r0, Z+2	; 0x02
+ 138:	02 c0       	rjmp	.+4      	; 0x13e <I2cSoftStop+0x3c>
+ 13a:	44 0f       	add	r20, r20
+ 13c:	55 1f       	adc	r21, r21
+ 13e:	0a 94       	dec	r0
+ 140:	e2 f7       	brpl	.-8      	; 0x13a <I2cSoftStop+0x38>
+ 142:	46 2b       	or	r20, r22
+ 144:	4c 93       	st	X, r20
+ 146:	a3 e0       	ldi	r26, 0x03	; 3
+ 148:	b0 e0       	ldi	r27, 0x00	; 0
+ 14a:	11 97       	sbiw	r26, 0x01	; 1
+ 14c:	f1 f7       	brne	.-4      	; 0x14a <I2cSoftStop+0x48>
+	Q_DEL;
+	
+	*Object->Port |= ( 1 << Object->Sda ); // High;
+ 14e:	a0 81       	ld	r26, Z
+ 150:	b1 81       	ldd	r27, Z+1	; 0x01
+ 152:	4c 91       	ld	r20, X
+ 154:	03 80       	ldd	r0, Z+3	; 0x03
+ 156:	02 c0       	rjmp	.+4      	; 0x15c <I2cSoftStop+0x5a>
+ 158:	22 0f       	add	r18, r18
+ 15a:	33 1f       	adc	r19, r19
+ 15c:	0a 94       	dec	r0
+ 15e:	e2 f7       	brpl	.-8      	; 0x158 <I2cSoftStop+0x56>
+ 160:	24 2b       	or	r18, r20
+ 162:	2c 93       	st	X, r18
+ 164:	01 97       	sbiw	r24, 0x01	; 1
+ 166:	f1 f7       	brne	.-4      	; 0x164 <I2cSoftStop+0x62>
+ 168:	08 95       	ret
+
+0000016a <I2cSoftWrite>:
+	H_DEL;
+}
+
+uint8_t I2cSoftWrite( tI2c *Object , uint8_t Data )
+{
+ 16a:	ef 92       	push	r14
+ 16c:	ff 92       	push	r15
+ 16e:	0f 93       	push	r16
+ 170:	1f 93       	push	r17
+ 172:	cf 93       	push	r28
+ 174:	df 93       	push	r29
+ 176:	dc 01       	movw	r26, r24
+ 178:	78 e0       	ldi	r23, 0x08	; 8
+	static uint8_t Acknowledge = 0;
+	uint8_t ui;
+	
+	for ( ui = 0 ; ui < 8 ; ui++ )
+	{
+		*Object->Port &= ~( 1 << Object->Scl ); // Low
+ 17a:	81 e0       	ldi	r24, 0x01	; 1
+ 17c:	90 e0       	ldi	r25, 0x00	; 0
+ 17e:	03 e0       	ldi	r16, 0x03	; 3
+ 180:	10 e0       	ldi	r17, 0x00	; 0
+ 182:	c5 e0       	ldi	r28, 0x05	; 5
+ 184:	d0 e0       	ldi	r29, 0x00	; 0
+ 186:	ed 91       	ld	r30, X+
+ 188:	fc 91       	ld	r31, X
+ 18a:	11 97       	sbiw	r26, 0x01	; 1
+ 18c:	30 81       	ld	r19, Z
+ 18e:	ac 01       	movw	r20, r24
+ 190:	12 96       	adiw	r26, 0x02	; 2
+ 192:	0c 90       	ld	r0, X
+ 194:	12 97       	sbiw	r26, 0x02	; 2
+ 196:	02 c0       	rjmp	.+4      	; 0x19c <I2cSoftWrite+0x32>
+ 198:	44 0f       	add	r20, r20
+ 19a:	55 1f       	adc	r21, r21
+ 19c:	0a 94       	dec	r0
+ 19e:	e2 f7       	brpl	.-8      	; 0x198 <I2cSoftWrite+0x2e>
+ 1a0:	24 2f       	mov	r18, r20
+ 1a2:	20 95       	com	r18
+ 1a4:	23 23       	and	r18, r19
+ 1a6:	20 83       	st	Z, r18
+ 1a8:	f8 01       	movw	r30, r16
+ 1aa:	31 97       	sbiw	r30, 0x01	; 1
+ 1ac:	f1 f7       	brne	.-4      	; 0x1aa <I2cSoftWrite+0x40>
+		
+		Q_DEL;
+		if ( Data & 0x80 )
+ 1ae:	66 23       	and	r22, r22
+ 1b0:	84 f4       	brge	.+32     	; 0x1d2 <I2cSoftWrite+0x68>
+		{
+			*Object->Port |= ( 1 << Object->Sda ); // High
+ 1b2:	ed 91       	ld	r30, X+
+ 1b4:	fc 91       	ld	r31, X
+ 1b6:	11 97       	sbiw	r26, 0x01	; 1
+ 1b8:	40 81       	ld	r20, Z
+ 1ba:	9c 01       	movw	r18, r24
+ 1bc:	13 96       	adiw	r26, 0x03	; 3
+ 1be:	0c 90       	ld	r0, X
+ 1c0:	13 97       	sbiw	r26, 0x03	; 3
+ 1c2:	02 c0       	rjmp	.+4      	; 0x1c8 <I2cSoftWrite+0x5e>
+ 1c4:	22 0f       	add	r18, r18
+ 1c6:	33 1f       	adc	r19, r19
+ 1c8:	0a 94       	dec	r0
+ 1ca:	e2 f7       	brpl	.-8      	; 0x1c4 <I2cSoftWrite+0x5a>
+ 1cc:	24 2b       	or	r18, r20
+ 1ce:	20 83       	st	Z, r18
+ 1d0:	11 c0       	rjmp	.+34     	; 0x1f4 <I2cSoftWrite+0x8a>
+		}else
+		{
+			*Object->Port &= ~( 1 << Object->Sda ); // Low
+ 1d2:	ed 91       	ld	r30, X+
+ 1d4:	fc 91       	ld	r31, X
+ 1d6:	11 97       	sbiw	r26, 0x01	; 1
+ 1d8:	30 81       	ld	r19, Z
+ 1da:	ac 01       	movw	r20, r24
+ 1dc:	13 96       	adiw	r26, 0x03	; 3
+ 1de:	0c 90       	ld	r0, X
+ 1e0:	13 97       	sbiw	r26, 0x03	; 3
+ 1e2:	02 c0       	rjmp	.+4      	; 0x1e8 <I2cSoftWrite+0x7e>
+ 1e4:	44 0f       	add	r20, r20
+ 1e6:	55 1f       	adc	r21, r21
+ 1e8:	0a 94       	dec	r0
+ 1ea:	e2 f7       	brpl	.-8      	; 0x1e4 <I2cSoftWrite+0x7a>
+ 1ec:	24 2f       	mov	r18, r20
+ 1ee:	20 95       	com	r18
+ 1f0:	23 23       	and	r18, r19
+ 1f2:	20 83       	st	Z, r18
+ 1f4:	fe 01       	movw	r30, r28
+ 1f6:	31 97       	sbiw	r30, 0x01	; 1
+ 1f8:	f1 f7       	brne	.-4      	; 0x1f6 <I2cSoftWrite+0x8c>
+		}
+		H_DEL;
+		
+		*Object->Port |= ( 1 << Object->Scl ); // High
+ 1fa:	ed 91       	ld	r30, X+
+ 1fc:	fc 91       	ld	r31, X
+ 1fe:	11 97       	sbiw	r26, 0x01	; 1
+ 200:	40 81       	ld	r20, Z
+ 202:	9c 01       	movw	r18, r24
+ 204:	12 96       	adiw	r26, 0x02	; 2
+ 206:	0c 90       	ld	r0, X
+ 208:	12 97       	sbiw	r26, 0x02	; 2
+ 20a:	02 c0       	rjmp	.+4      	; 0x210 <I2cSoftWrite+0xa6>
+ 20c:	22 0f       	add	r18, r18
+ 20e:	33 1f       	adc	r19, r19
+ 210:	0a 94       	dec	r0
+ 212:	e2 f7       	brpl	.-8      	; 0x20c <I2cSoftWrite+0xa2>
+ 214:	24 2b       	or	r18, r20
+ 216:	20 83       	st	Z, r18
+ 218:	fe 01       	movw	r30, r28
+ 21a:	31 97       	sbiw	r30, 0x01	; 1
+ 21c:	f1 f7       	brne	.-4      	; 0x21a <I2cSoftWrite+0xb0>
+		H_DEL;
+		
+ 		__PORT_DDR__( Object->Port ) &= ~( 1 << Object->Scl ); // Scl als Eingang konfigurieren
+ 21e:	ed 91       	ld	r30, X+
+ 220:	fc 91       	ld	r31, X
+ 222:	11 97       	sbiw	r26, 0x01	; 1
+ 224:	32 91       	ld	r19, -Z
+ 226:	ac 01       	movw	r20, r24
+ 228:	12 96       	adiw	r26, 0x02	; 2
+ 22a:	0c 90       	ld	r0, X
+ 22c:	12 97       	sbiw	r26, 0x02	; 2
+ 22e:	02 c0       	rjmp	.+4      	; 0x234 <I2cSoftWrite+0xca>
+ 230:	44 0f       	add	r20, r20
+ 232:	55 1f       	adc	r21, r21
+ 234:	0a 94       	dec	r0
+ 236:	e2 f7       	brpl	.-8      	; 0x230 <I2cSoftWrite+0xc6>
+ 238:	24 2f       	mov	r18, r20
+ 23a:	20 95       	com	r18
+ 23c:	23 23       	and	r18, r19
+ 23e:	20 83       	st	Z, r18
+ 		while ( ( __PORT_PIN__( Object->Port ) & ( 1 << Object->Scl ) ) == 0 ); // Warten bis "Scl" Low..
+ 240:	ed 90       	ld	r14, X+
+ 242:	fc 90       	ld	r15, X
+ 244:	11 97       	sbiw	r26, 0x01	; 1
+ 246:	ac 01       	movw	r20, r24
+ 248:	12 96       	adiw	r26, 0x02	; 2
+ 24a:	0c 90       	ld	r0, X
+ 24c:	12 97       	sbiw	r26, 0x02	; 2
+ 24e:	02 c0       	rjmp	.+4      	; 0x254 <I2cSoftWrite+0xea>
+ 250:	44 0f       	add	r20, r20
+ 252:	55 1f       	adc	r21, r21
+ 254:	0a 94       	dec	r0
+ 256:	e2 f7       	brpl	.-8      	; 0x250 <I2cSoftWrite+0xe6>
+ 258:	f7 01       	movw	r30, r14
+ 25a:	32 97       	sbiw	r30, 0x02	; 2
+ 25c:	20 81       	ld	r18, Z
+ 25e:	30 e0       	ldi	r19, 0x00	; 0
+ 260:	24 23       	and	r18, r20
+ 262:	35 23       	and	r19, r21
+ 264:	23 2b       	or	r18, r19
+ 266:	d1 f3       	breq	.-12     	; 0x25c <I2cSoftWrite+0xf2>
+ 		__PORT_DDR__( Object->Port ) |= ( 1 << Object->Scl ); // Scl als Ausgang konfigurieren
+ 268:	f7 01       	movw	r30, r14
+ 26a:	22 91       	ld	r18, -Z
+ 26c:	42 2b       	or	r20, r18
+ 26e:	40 83       	st	Z, r20
+		
+		Data <<= 1;
+ 270:	66 0f       	add	r22, r22
+ 272:	71 50       	subi	r23, 0x01	; 1
+uint8_t I2cSoftWrite( tI2c *Object , uint8_t Data )
+{
+	static uint8_t Acknowledge = 0;
+	uint8_t ui;
+	
+	for ( ui = 0 ; ui < 8 ; ui++ )
+ 274:	09 f0       	breq	.+2      	; 0x278 <I2cSoftWrite+0x10e>
+ 276:	87 cf       	rjmp	.-242    	; 0x186 <I2cSoftWrite+0x1c>
+		
+		Data <<= 1;
+	}
+
+	//The 9th clock (ACK Phase)	
+	*Object->Port &= ~( 1 << Object->Scl ); // Low
+ 278:	ed 91       	ld	r30, X+
+ 27a:	fc 91       	ld	r31, X
+ 27c:	11 97       	sbiw	r26, 0x01	; 1
+ 27e:	30 81       	ld	r19, Z
+ 280:	81 e0       	ldi	r24, 0x01	; 1
+ 282:	90 e0       	ldi	r25, 0x00	; 0
+ 284:	ac 01       	movw	r20, r24
+ 286:	12 96       	adiw	r26, 0x02	; 2
+ 288:	0c 90       	ld	r0, X
+ 28a:	12 97       	sbiw	r26, 0x02	; 2
+ 28c:	02 c0       	rjmp	.+4      	; 0x292 <I2cSoftWrite+0x128>
+ 28e:	44 0f       	add	r20, r20
+ 290:	55 1f       	adc	r21, r21
+ 292:	0a 94       	dec	r0
+ 294:	e2 f7       	brpl	.-8      	; 0x28e <I2cSoftWrite+0x124>
+ 296:	24 2f       	mov	r18, r20
+ 298:	20 95       	com	r18
+ 29a:	23 23       	and	r18, r19
+ 29c:	20 83       	st	Z, r18
+ 29e:	e3 e0       	ldi	r30, 0x03	; 3
+ 2a0:	f0 e0       	ldi	r31, 0x00	; 0
+ 2a2:	31 97       	sbiw	r30, 0x01	; 1
+ 2a4:	f1 f7       	brne	.-4      	; 0x2a2 <I2cSoftWrite+0x138>
+	Q_DEL;
+	
+	*Object->Port |= ( 1 << Object->Sda ); // High
+ 2a6:	ed 91       	ld	r30, X+
+ 2a8:	fc 91       	ld	r31, X
+ 2aa:	11 97       	sbiw	r26, 0x01	; 1
+ 2ac:	40 81       	ld	r20, Z
+ 2ae:	9c 01       	movw	r18, r24
+ 2b0:	13 96       	adiw	r26, 0x03	; 3
+ 2b2:	0c 90       	ld	r0, X
+ 2b4:	13 97       	sbiw	r26, 0x03	; 3
+ 2b6:	02 c0       	rjmp	.+4      	; 0x2bc <I2cSoftWrite+0x152>
+ 2b8:	22 0f       	add	r18, r18
+ 2ba:	33 1f       	adc	r19, r19
+ 2bc:	0a 94       	dec	r0
+ 2be:	e2 f7       	brpl	.-8      	; 0x2b8 <I2cSoftWrite+0x14e>
+ 2c0:	24 2b       	or	r18, r20
+ 2c2:	20 83       	st	Z, r18
+ 2c4:	45 e0       	ldi	r20, 0x05	; 5
+ 2c6:	50 e0       	ldi	r21, 0x00	; 0
+ 2c8:	fa 01       	movw	r30, r20
+ 2ca:	31 97       	sbiw	r30, 0x01	; 1
+ 2cc:	f1 f7       	brne	.-4      	; 0x2ca <I2cSoftWrite+0x160>
+	H_DEL;
+	
+	*Object->Port |= ( 1 << Object->Scl ); // High
+ 2ce:	ed 91       	ld	r30, X+
+ 2d0:	fc 91       	ld	r31, X
+ 2d2:	11 97       	sbiw	r26, 0x01	; 1
+ 2d4:	60 81       	ld	r22, Z
+ 2d6:	9c 01       	movw	r18, r24
+ 2d8:	12 96       	adiw	r26, 0x02	; 2
+ 2da:	0c 90       	ld	r0, X
+ 2dc:	12 97       	sbiw	r26, 0x02	; 2
+ 2de:	02 c0       	rjmp	.+4      	; 0x2e4 <I2cSoftWrite+0x17a>
+ 2e0:	22 0f       	add	r18, r18
+ 2e2:	33 1f       	adc	r19, r19
+ 2e4:	0a 94       	dec	r0
+ 2e6:	e2 f7       	brpl	.-8      	; 0x2e0 <I2cSoftWrite+0x176>
+ 2e8:	26 2b       	or	r18, r22
+ 2ea:	20 83       	st	Z, r18
+ 2ec:	fa 01       	movw	r30, r20
+ 2ee:	31 97       	sbiw	r30, 0x01	; 1
+ 2f0:	f1 f7       	brne	.-4      	; 0x2ee <I2cSoftWrite+0x184>
+	H_DEL;
+		
+	__PORT_DDR__( Object->Port ) &= ~( 1 << Object->Sda ); // Als Eingang verwenden
+ 2f2:	ed 91       	ld	r30, X+
+ 2f4:	fc 91       	ld	r31, X
+ 2f6:	11 97       	sbiw	r26, 0x01	; 1
+ 2f8:	32 91       	ld	r19, -Z
+ 2fa:	bc 01       	movw	r22, r24
+ 2fc:	13 96       	adiw	r26, 0x03	; 3
+ 2fe:	0c 90       	ld	r0, X
+ 300:	13 97       	sbiw	r26, 0x03	; 3
+ 302:	02 c0       	rjmp	.+4      	; 0x308 <I2cSoftWrite+0x19e>
+ 304:	66 0f       	add	r22, r22
+ 306:	77 1f       	adc	r23, r23
+ 308:	0a 94       	dec	r0
+ 30a:	e2 f7       	brpl	.-8      	; 0x304 <I2cSoftWrite+0x19a>
+ 30c:	26 2f       	mov	r18, r22
+ 30e:	20 95       	com	r18
+ 310:	23 23       	and	r18, r19
+ 312:	20 83       	st	Z, r18
+	Acknowledge = !(__PORT_PIN__( Object->Port ) & ( 1 << Object->Sda ) );
+ 314:	ed 91       	ld	r30, X+
+ 316:	fc 91       	ld	r31, X
+ 318:	11 97       	sbiw	r26, 0x01	; 1
+ 31a:	ef 01       	movw	r28, r30
+ 31c:	22 97       	sbiw	r28, 0x02	; 2
+ 31e:	28 81       	ld	r18, Y
+ 320:	13 96       	adiw	r26, 0x03	; 3
+ 322:	cc 91       	ld	r28, X
+ 324:	13 97       	sbiw	r26, 0x03	; 3
+	__PORT_DDR__( Object->Port ) |= ( 1 << Object->Sda ); // Als Ausgang verwenden	
+ 326:	32 91       	ld	r19, -Z
+ 328:	bc 01       	movw	r22, r24
+ 32a:	0c 2e       	mov	r0, r28
+ 32c:	02 c0       	rjmp	.+4      	; 0x332 <I2cSoftWrite+0x1c8>
+ 32e:	66 0f       	add	r22, r22
+ 330:	77 1f       	adc	r23, r23
+ 332:	0a 94       	dec	r0
+ 334:	e2 f7       	brpl	.-8      	; 0x32e <I2cSoftWrite+0x1c4>
+ 336:	63 2b       	or	r22, r19
+ 338:	60 83       	st	Z, r22
+	
+	*Object->Port &= ~( 1 << Object->Scl ); // Low 
+ 33a:	ed 91       	ld	r30, X+
+ 33c:	fc 91       	ld	r31, X
+ 33e:	11 97       	sbiw	r26, 0x01	; 1
+ 340:	30 81       	ld	r19, Z
+ 342:	12 96       	adiw	r26, 0x02	; 2
+ 344:	0c 90       	ld	r0, X
+ 346:	02 c0       	rjmp	.+4      	; 0x34c <I2cSoftWrite+0x1e2>
+ 348:	88 0f       	add	r24, r24
+ 34a:	99 1f       	adc	r25, r25
+ 34c:	0a 94       	dec	r0
+ 34e:	e2 f7       	brpl	.-8      	; 0x348 <I2cSoftWrite+0x1de>
+ 350:	80 95       	com	r24
+ 352:	83 23       	and	r24, r19
+ 354:	80 83       	st	Z, r24
+ 356:	ca 01       	movw	r24, r20
+ 358:	01 97       	sbiw	r24, 0x01	; 1
+ 35a:	f1 f7       	brne	.-4      	; 0x358 <I2cSoftWrite+0x1ee>
+	H_DEL;
+	
+	return Acknowledge;	
+ 35c:	82 2f       	mov	r24, r18
+ 35e:	90 e0       	ldi	r25, 0x00	; 0
+ 360:	02 c0       	rjmp	.+4      	; 0x366 <I2cSoftWrite+0x1fc>
+ 362:	95 95       	asr	r25
+ 364:	87 95       	ror	r24
+ 366:	ca 95       	dec	r28
+ 368:	e2 f7       	brpl	.-8      	; 0x362 <I2cSoftWrite+0x1f8>
+ 36a:	21 e0       	ldi	r18, 0x01	; 1
+ 36c:	82 27       	eor	r24, r18
+}
+ 36e:	81 70       	andi	r24, 0x01	; 1
+ 370:	df 91       	pop	r29
+ 372:	cf 91       	pop	r28
+ 374:	1f 91       	pop	r17
+ 376:	0f 91       	pop	r16
+ 378:	ff 90       	pop	r15
+ 37a:	ef 90       	pop	r14
+ 37c:	08 95       	ret
+
+0000037e <main>:
 
 tI2c SoftI2c;
 
 int main(void)
 {
 	SoftI2c.Port = &PORTC;
-  e2:	e0 e6       	ldi	r30, 0x60	; 96
-  e4:	f0 e0       	ldi	r31, 0x00	; 0
-  e6:	85 e3       	ldi	r24, 0x35	; 53
-  e8:	90 e0       	ldi	r25, 0x00	; 0
-  ea:	91 83       	std	Z+1, r25	; 0x01
-  ec:	80 83       	st	Z, r24
-	SoftI2c.Scl = 1<<PC0;
-  ee:	81 e0       	ldi	r24, 0x01	; 1
-  f0:	82 83       	std	Z+2, r24	; 0x02
-	SoftI2c.Sda = 1<<PC1;
-  f2:	82 e0       	ldi	r24, 0x02	; 2
-  f4:	83 83       	std	Z+3, r24	; 0x03
-	I2cSoftInit( &SoftI2c );
-  f6:	cf 01       	movw	r24, r30
-  f8:	0e 94 3e 00 	call	0x7c	; 0x7c <I2cSoftInit>
-
+ 37e:	e4 e6       	ldi	r30, 0x64	; 100
+ 380:	f0 e0       	ldi	r31, 0x00	; 0
+ 382:	85 e3       	ldi	r24, 0x35	; 53
+ 384:	90 e0       	ldi	r25, 0x00	; 0
+ 386:	91 83       	std	Z+1, r25	; 0x01
+ 388:	80 83       	st	Z, r24
+	SoftI2c.Scl = PC0;
+ 38a:	12 82       	std	Z+2, r1	; 0x02
+	SoftI2c.Sda = PC1;
+ 38c:	81 e0       	ldi	r24, 0x01	; 1
+ 38e:	83 83       	std	Z+3, r24	; 0x03
+	I2cSoftInit( SoftI2c );
+ 390:	60 91 64 00 	lds	r22, 0x0064	; 0x800064 <SoftI2c>
+ 394:	70 91 65 00 	lds	r23, 0x0065	; 0x800065 <SoftI2c+0x1>
+ 398:	80 91 66 00 	lds	r24, 0x0066	; 0x800066 <SoftI2c+0x2>
+ 39c:	90 91 67 00 	lds	r25, 0x0067	; 0x800067 <SoftI2c+0x3>
+ 3a0:	0e 94 3e 00 	call	0x7c	; 0x7c <I2cSoftInit>
 	
+	//uint8_t Commando[] = { 13 , 0x83 }; // Frequenz Modus + 1Hz
 	
     while (1) 
-    {
- 		*SoftI2c.Port |=  (1<<SoftI2c.Scl);
-  fc:	e0 e6       	ldi	r30, 0x60	; 96
-  fe:	f0 e0       	ldi	r31, 0x00	; 0
- 100:	81 e0       	ldi	r24, 0x01	; 1
- 102:	90 e0       	ldi	r25, 0x00	; 0
- 104:	a0 81       	ld	r26, Z
- 106:	b1 81       	ldd	r27, Z+1	; 0x01
- 108:	4c 91       	ld	r20, X
- 10a:	9c 01       	movw	r18, r24
- 10c:	02 80       	ldd	r0, Z+2	; 0x02
- 10e:	02 c0       	rjmp	.+4      	; 0x114 <main+0x32>
- 110:	22 0f       	add	r18, r18
- 112:	33 1f       	adc	r19, r19
- 114:	0a 94       	dec	r0
- 116:	e2 f7       	brpl	.-8      	; 0x110 <main+0x2e>
- 118:	24 2b       	or	r18, r20
- 11a:	2c 93       	st	X, r18
-		*SoftI2c.Port |=  (1<<SoftI2c.Sda);
- 11c:	a0 81       	ld	r26, Z
- 11e:	b1 81       	ldd	r27, Z+1	; 0x01
- 120:	4c 91       	ld	r20, X
- 122:	9c 01       	movw	r18, r24
- 124:	03 80       	ldd	r0, Z+3	; 0x03
- 126:	02 c0       	rjmp	.+4      	; 0x12c <main+0x4a>
- 128:	22 0f       	add	r18, r18
- 12a:	33 1f       	adc	r19, r19
- 12c:	0a 94       	dec	r0
- 12e:	e2 f7       	brpl	.-8      	; 0x128 <main+0x46>
- 130:	24 2b       	or	r18, r20
- 132:	2c 93       	st	X, r18
-		 
- 		*SoftI2c.Port &= ~(1<<SoftI2c.Scl);
- 134:	a0 81       	ld	r26, Z
- 136:	b1 81       	ldd	r27, Z+1	; 0x01
- 138:	3c 91       	ld	r19, X
- 13a:	ac 01       	movw	r20, r24
- 13c:	02 80       	ldd	r0, Z+2	; 0x02
- 13e:	02 c0       	rjmp	.+4      	; 0x144 <main+0x62>
- 140:	44 0f       	add	r20, r20
- 142:	55 1f       	adc	r21, r21
- 144:	0a 94       	dec	r0
- 146:	e2 f7       	brpl	.-8      	; 0x140 <main+0x5e>
- 148:	24 2f       	mov	r18, r20
- 14a:	20 95       	com	r18
- 14c:	23 23       	and	r18, r19
- 14e:	2c 93       	st	X, r18
-		*SoftI2c.Port &= ~(1<<SoftI2c.Sda);
- 150:	a0 81       	ld	r26, Z
- 152:	b1 81       	ldd	r27, Z+1	; 0x01
- 154:	3c 91       	ld	r19, X
- 156:	ac 01       	movw	r20, r24
- 158:	03 80       	ldd	r0, Z+3	; 0x03
- 15a:	02 c0       	rjmp	.+4      	; 0x160 <main+0x7e>
- 15c:	44 0f       	add	r20, r20
- 15e:	55 1f       	adc	r21, r21
- 160:	0a 94       	dec	r0
- 162:	e2 f7       	brpl	.-8      	; 0x15c <main+0x7a>
- 164:	24 2f       	mov	r18, r20
- 166:	20 95       	com	r18
- 168:	23 23       	and	r18, r19
- 16a:	2c 93       	st	X, r18
- 16c:	cb cf       	rjmp	.-106    	; 0x104 <main+0x22>
+    {	
+		I2cSoftStart( &SoftI2c );
+ 3a4:	84 e6       	ldi	r24, 0x64	; 100
+ 3a6:	90 e0       	ldi	r25, 0x00	; 0
+ 3a8:	0e 94 5d 00 	call	0xba	; 0xba <I2cSoftStart>
+		I2cSoftWrite( &SoftI2c , 0xA2 ); // Slave Adresse
+ 3ac:	62 ea       	ldi	r22, 0xA2	; 162
+ 3ae:	84 e6       	ldi	r24, 0x64	; 100
+ 3b0:	90 e0       	ldi	r25, 0x00	; 0
+ 3b2:	0e 94 b5 00 	call	0x16a	; 0x16a <I2cSoftWrite>
+		I2cSoftWrite( &SoftI2c , 13 );
+ 3b6:	6d e0       	ldi	r22, 0x0D	; 13
+ 3b8:	84 e6       	ldi	r24, 0x64	; 100
+ 3ba:	90 e0       	ldi	r25, 0x00	; 0
+ 3bc:	0e 94 b5 00 	call	0x16a	; 0x16a <I2cSoftWrite>
+		I2cSoftWrite( &SoftI2c , 0x83 );
+ 3c0:	63 e8       	ldi	r22, 0x83	; 131
+ 3c2:	84 e6       	ldi	r24, 0x64	; 100
+ 3c4:	90 e0       	ldi	r25, 0x00	; 0
+ 3c6:	0e 94 b5 00 	call	0x16a	; 0x16a <I2cSoftWrite>
+		I2cSoftStop( &SoftI2c );
+ 3ca:	84 e6       	ldi	r24, 0x64	; 100
+ 3cc:	90 e0       	ldi	r25, 0x00	; 0
+ 3ce:	0e 94 81 00 	call	0x102	; 0x102 <I2cSoftStop>
+ 3d2:	e8 cf       	rjmp	.-48     	; 0x3a4 <main+0x26>
 
-0000016e <_exit>:
- 16e:	f8 94       	cli
+000003d4 <_exit>:
+ 3d4:	f8 94       	cli
 
-00000170 <__stop_program>:
- 170:	ff cf       	rjmp	.-2      	; 0x170 <__stop_program>
+000003d6 <__stop_program>:
+ 3d6:	ff cf       	rjmp	.-2      	; 0x3d6 <__stop_program>
